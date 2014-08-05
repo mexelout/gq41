@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Vertex.h"
 #include "ShaderDevise.h"
+#include "Input.h"
 
 Arrow::Arrow(void) {
 	D3DXMatrixIdentity(&world);
@@ -23,8 +24,8 @@ Arrow* Arrow::init(LPDIRECT3DDEVICE9 device) {
 		);
 
 	CUSTOMVERTEX vtx[] = {
-		{_start, D3DXVECTOR3(0, 1, 0), 0xffffffff, D3DXVECTOR2(0, 0)},
-		{_end, D3DXVECTOR3(0, 1, 0), 0xffffffff, D3DXVECTOR2(1, 0)},
+		CUSTOMVERTEX(_start, D3DXVECTOR3(0, 1, 0), 0xffffffff, D3DXVECTOR2(0, 0)),
+		CUSTOMVERTEX(_end, D3DXVECTOR3(0, 1, 0), 0xffffffff, D3DXVECTOR2(1, 0)),
 	};
 
 	void *data;
@@ -68,15 +69,42 @@ Arrow* Arrow::init(LPDIRECT3DDEVICE9 device) {
 	return this;
 }
 void Arrow::update() {
-	static int count = 0;
 	CUSTOMVERTEX *data;
 	vbuf->Lock(0, sizeof(CUSTOMVERTEX)*2, (void**)&data, 0);
 
-	count++;
-	if(count % 120 < 60)
-		_end.y += 0.06125f;
-	else
-		_end.y -= 0.06125f;
+	float angle = 0;
+	bool is_down = false;
+
+	if(InputKeyboard::isKey(DIK_LEFT, Input::Press)) {
+		if(InputKeyboard::isKey(DIK_UP, Input::Press)) {
+			angle = D3DX_PI * 0.25f;
+		} else if(InputKeyboard::isKey(DIK_DOWN, Input::Press)) {
+			angle = D3DX_PI * 1.75f;
+		} else {
+			angle = 0;
+		}
+		is_down = true;
+	} else if(InputKeyboard::isKey(DIK_RIGHT, Input::Press)) {
+		if(InputKeyboard::isKey(DIK_UP, Input::Press)) {
+			angle = D3DX_PI * 0.75f;
+		} else if(InputKeyboard::isKey(DIK_DOWN, Input::Press)) {
+			angle = D3DX_PI * 1.25f;
+		} else {
+			angle = D3DX_PI;
+		}
+		is_down = true;
+	} else if(InputKeyboard::isKey(DIK_UP, Input::Press)) {
+		angle = D3DX_PI * 0.5f;
+		is_down = true;
+	} else if(InputKeyboard::isKey(DIK_DOWN, Input::Press)) {
+		angle = D3DX_PI * 1.5f;
+		is_down = true;
+	}
+
+	if(is_down) {
+		_end.x += cosf(angle) * 0.1f;
+		_end.y += sinf(angle) * 0.1f;
+	}
 
 	data[1].pos = _end;
 
@@ -89,8 +117,9 @@ void Arrow::update() {
 
 
 	if((v0 >= 0 && v1 < 0) || v0 < 0 && v1 >= 0) {
-		data[0].color = 0xff800080;
-		data[1].color = 0xff800080;
+
+		data[0].color = 0xffff8888;
+		data[1].color = 0xffff8888;
 	} else {
 		data[0].color = 0xffffffff;
 		data[1].color = 0xffffffff;
@@ -135,4 +164,17 @@ const D3DXVECTOR3& Arrow::start() {
 
 const D3DXVECTOR3& Arrow::end() {
 	return _end;
+}
+
+void Arrow::hitTestPlane(const std::vector<CUSTOMVERTEX>& vertices) {
+
+}
+
+//CannonBullet* Arrow::init(void)
+//{
+//}
+
+
+void Arrow::draw(void)
+{
 }

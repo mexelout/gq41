@@ -1,5 +1,7 @@
 #pragma once
+#include <vector>
 #include "model.h"
+#include "Vertex.h"
 
 class Arrow {
 public:
@@ -12,6 +14,7 @@ public:
 	const bool collision();
 	const D3DXVECTOR3& start();
 	const D3DXVECTOR3& end();
+	void hitTestPlane(const std::vector<CUSTOMVERTEX>& vertices);
 private:
 	LPDIRECT3DVERTEXBUFFER9 vbuf;
 	LPD3DXCONSTANTTABLE _vs_constant_table;
@@ -24,5 +27,8 @@ private:
 	bool _collision;
 //	Model start;
 //	Model end;
+public:
+//	CannonBullet* init(void);
+	void draw(void);
 };
 

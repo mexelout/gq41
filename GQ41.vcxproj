@@ -39,14 +39,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.0A\Include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28August 2007%29\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28August 2007%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\</OutDir>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.0A\Include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28August 2007%29\Include</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28August 2007%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -80,19 +80,61 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Arrow.cpp" />
+    <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CannonBullet.cpp" />
+    <ClCompile Include="Common.cpp" />
+    <ClCompile Include="DebugScene.cpp" />
+    <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="GroundMesh.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="InputKeyboard.cpp" />
+    <ClCompile Include="InputMouse.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MeshField.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="MultiPlane.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ShaderDevise.cpp" />
+    <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="Spara.cpp" />
+    <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="WaveMesh.cpp" />
+    <ClCompile Include="WaveScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arrow.h" />
+    <ClInclude Include="Billboard.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CannonBullet.h" />
+    <ClInclude Include="Common.h" />
+    <ClInclude Include="DebugScene.h" />
+    <ClInclude Include="GameScene.h" />
+    <ClInclude Include="Grid.h" />
+    <ClInclude Include="GroundMesh.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="InputKeyboard.h" />
+    <ClInclude Include="InputMouse.h" />
+    <ClInclude Include="MeshField.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="MultiPlane.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderDevise.h" />
+    <ClInclude Include="Ship.h" />
+    <ClInclude Include="Spara.h" />
+    <ClInclude Include="TestScene.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="WaveMesh.h" />
+    <ClInclude Include="WaveScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.fx" />

@@ -1,6 +1,7 @@
 
 #include "Plane.h"
 #include "Camera.h"
+#include "ShaderDevise.h"
 
 Plane::Plane(void) {
 	vbuf = NULL;
@@ -11,26 +12,14 @@ Plane::~Plane(void) {
 }
 
 Plane* Plane::init(LPDIRECT3DDEVICE9 device) {
-	device->CreateVertexBuffer(
-		sizeof(CUSTOMVERTEX)*4,
-		D3DUSAGE_WRITEONLY,
-		D3DFVF_CUSTOMVERTEX,
-		D3DPOOL_MANAGED,
-		&vbuf,
-		NULL
-		);
 
 	CUSTOMVERTEX vtx[] = {
-		{D3DXVECTOR3(-1, 0,  1), D3DXVECTOR3(0, 1, 0), 0x00ffffff, D3DXVECTOR2(0, 0)},
-		{D3DXVECTOR3( 1, 0,  1), D3DXVECTOR3(0, 1, 0), 0x00ffffff, D3DXVECTOR2(1, 0)},
-		{D3DXVECTOR3(-1, 0, -1), D3DXVECTOR3(0, 1, 0), 0xffffffff, D3DXVECTOR2(0, 1)},
-		{D3DXVECTOR3( 1, 0, -1), D3DXVECTOR3(0, 1, 0), 0xffffffff, D3DXVECTOR2(1, 1)}
+		CUSTOMVERTEX(D3DXVECTOR3(-1, 0,  1), D3DXVECTOR3(0, 1, 0), 0x00ffffff, D3DXVECTOR2(0, 0)),
+		CUSTOMVERTEX(D3DXVECTOR3( 1, 0,  1), D3DXVECTOR3(0, 1, 0), 0x00ffffff, D3DXVECTOR2(1, 0)),
+		CUSTOMVERTEX(D3DXVECTOR3(-1, 0, -1), D3DXVECTOR3(0, 1, 0), 0xffffffff, D3DXVECTOR2(0, 1)),
+		CUSTOMVERTEX(D3DXVECTOR3( 1, 0, -1), D3DXVECTOR3(0, 1, 0), 0xffffffff, D3DXVECTOR2(1, 1)),
 	};
-
-	void *data;
-	vbuf->Lock(0, sizeof(CUSTOMVERTEX)*4, &data, 0);
-	memcpy(data, vtx, sizeof(CUSTOMVERTEX)*4);
-	vbuf->Unlock();
+	setVertices(vtx, 4);
 
 	LPD3DXBUFFER code;
 	LPD3DXBUFFER error;
@@ -65,7 +54,7 @@ Plane* Plane::init(LPDIRECT3DDEVICE9 device) {
 	device->CreatePixelShader((DWORD*)code->GetBufferPointer(), &_ps);
 	code->Release();
 
-	D3DXCreateTextureFromFile(device, "textures/default.bmp", &texture);
+	D3DXCreateTextureFromFile(device, "textures/ground.png", &texture);
 
 	angle = (D3DX_PI / 180.0f * 2);
 	//D3DXMATRIX rot;
@@ -93,8 +82,6 @@ void Plane::draw(LPDIRECT3DDEVICE9 device) {
 	device->SetTexture(0, texture);
 	device->SetStreamSource(0, vbuf, 0, sizeof(CUSTOMVERTEX));
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-	device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 	device->SetTexture(0, NULL);
 	device->SetVertexShader(NULL);
 	device->SetPixelShader(NULL);
@@ -112,4 +99,32 @@ void Plane::release() {
 }
 
 void Plane::setCollision(bool col) {
+}
+
+const std::vector<CUSTOMVERTEX>& Plane::vertices() {
+	return _vtx;
+}
+
+void Plane::setVertices(CUSTOMVERTEX* vtx, int size) {
+	std::vector<CUSTOMVERTEX> tmpvtx;
+	for(int i = 0; i < size; i++) tmpvtx.push_back(vtx[i]); 
+	setVertices(tmpvtx);
+}
+
+void Plane::setVertices(std::vector<CUSTOMVERTEX>& vtx) {
+	LPDIRECT3DDEVICE9 device = ShaderDevise::device();
+	if(vbuf) vbuf->Release();
+	device->CreateVertexBuffer(
+		sizeof(CUSTOMVERTEX)*vtx.size(),
+		D3DUSAGE_WRITEONLY,
+		D3DFVF_CUSTOMVERTEX,
+		D3DPOOL_MANAGED,
+		&vbuf,
+		NULL
+		);
+	_vtx = vtx;
+	CUSTOMVERTEX *data;
+	vbuf->Lock(0, sizeof(CUSTOMVERTEX)*vtx.size(), (void**)&data, 0);
+	for(int i = 0, len = vtx.size(); i < len; i++) data[i] = vtx[i];
+	vbuf->Unlock();
 }
