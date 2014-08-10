@@ -4,9 +4,13 @@
 Particle::Particle(void) {
 	life = 0;
 	max_life = 0;
-	min_scl = D3DXVECTOR3(0, 0, 0);
-	max_scl = D3DXVECTOR3(0, 0, 0);
+	anim_max = 0;
+	end_scl = D3DXVECTOR3(0, 0, 0);
+	start_scl = D3DXVECTOR3(0, 0, 0);
 	is_use = false;
+	pos = D3DXVECTOR3(0, 0, 0);
+	speed = D3DXVECTOR3(0, 0, 0);
+	is_gravity = false;
 }
 
 Particle::~Particle(void) {
@@ -19,10 +23,14 @@ Particle* Particle::init() {
 void Particle::update() {
 	if(is_use) {
 		life++;
-		scl = min_scl + (max_scl - min_scl) * ((max_life - life) / (float)max_life);
+		scl = end_scl + (start_scl - end_scl) * ((max_life - life) / (float)max_life);
 		if(life >= max_life) {
 			is_use = false;
+			life = 0;
 		}
+		pos += speed;
+		if(is_gravity)
+			speed.y -= 0.0016f;
 	}
 	Billboard::update();
 }
@@ -34,7 +42,16 @@ void Particle::draw(LPDIRECT3DVERTEXBUFFER9 vtx) {
 void Particle::release() {
 	Billboard::release();
 }
-
+bool Particle::getUse() {
+	return is_use;
+}
+bool Particle::fire(D3DXVECTOR3 pos, D3DXVECTOR3 speed, bool gravity) {
+	if(is_use) return false;
+	this->pos = pos;
+	this->speed = speed;
+	is_gravity = gravity;
+	return is_use = true;
+}
 int Particle::getAnimNum() {
 	int num = (int)((float)life / (float)max_life * (anim_max));
 	if(num >= anim_max) num -= 1;
@@ -56,12 +73,20 @@ Particle* Particle::setLife(int life) {
 	this->life = life;
 	return this;
 }
-Particle* Particle::setMaxScl(D3DXVECTOR3 max_scl) {
-	this->max_scl = max_scl;
+Particle* Particle::setStartScl(D3DXVECTOR3 scl) {
+	this->start_scl = scl;
 	return this;
 }
-Particle* Particle::setMinScl(D3DXVECTOR3 min_scl) {
-	this->min_scl = min_scl;
+Particle* Particle::setEndScl(D3DXVECTOR3 scl) {
+	this->end_scl = scl;
+	return this;
+}
+Particle* Particle::setSpeed(D3DXVECTOR3 speed) {
+	this->speed = speed;
+	return this;
+}
+Particle* Particle::setGravity(bool gravity) {
+	this->is_gravity = gravity;
 	return this;
 }
 

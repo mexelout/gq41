@@ -33,6 +33,8 @@ public:
 	float getAngle();
 	// ‰¡‰ñ“]æ“¾
 	float getSwingAngle();
+	// À•Wİ’è
+	Ship* setPos(D3DXVECTOR3 pos);
 private:
 	D3DXVECTOR3 pos;
 	float speed;

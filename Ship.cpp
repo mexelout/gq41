@@ -57,7 +57,7 @@ void Ship::update() {
 	float prev_angle = angle;
 	float prev_swing_angle = swing_angle;
 	D3DXVECTOR3 prev_pos(pos);
-	swing_angle += 0.01f;
+	swing_angle += 0.03f;
 
 	if(InputMouse::btn(InputMouse::Right, Input::Press)) {
 		speed += (0.001f * (InputKeyboard::isKey(DIK_W, Input::Press)?1.0f:0.0f));
@@ -179,7 +179,7 @@ void Ship::release() {
 D3DXMATRIX Ship::getWorld() {
 	D3DXMATRIX world(Common::identity), rot_x, rot_y, translate;
 	D3DXMatrixTranslation(&translate, this->pos.x, this->pos.y, this->pos.z);
-	D3DXMatrixRotationX(&rot_x, sinf(swing_angle)*0.1f);
+	D3DXMatrixRotationX(&rot_x, sinf(swing_angle)*0.05f);
 	D3DXMatrixRotationY(&rot_y, angle);
 	world = world * rot_x * rot_y * translate;
 	return world;
@@ -378,5 +378,11 @@ float Ship::getAngle() {
 // ‰¡‰ñ“]Žæ“¾
 float Ship::getSwingAngle() {
 	return swing_angle;
+}
+
+// À•WÝ’è
+Ship* Ship::setPos(D3DXVECTOR3 pos) {
+	this->pos = pos;
+	return this;
 }
 

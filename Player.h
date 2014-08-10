@@ -20,6 +20,7 @@ public:
 	D3DXMATRIX getWorld();
 	// ¡‹‚é‚Ì’n–Ê‚Ì‚‚³‚ğİ’è
 	void setGroundHeight(float ground_height);
+	bool getGrounded();
 protected:
 	D3DXVECTOR3 _pos;
 	D3DXVECTOR3 _speed;

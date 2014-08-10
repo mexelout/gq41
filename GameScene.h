@@ -8,8 +8,8 @@ class GroundMesh;
 class Billboard;
 class Ship;
 class WaveMesh;
-class Model;
 class CannonBullet;
+class ParticleSystem;
 
 class GameScene : public Scene {
 public:
@@ -30,14 +30,11 @@ private:
 	GroundMesh* ground_mesh;
 	WaveMesh* wave_mesh;
 
-	Billboard** bill_board;
-
 	Ship* ship;
 
-	D3DXVECTOR3 effect_pos;
+	ParticleSystem* particle_system;
 
 	CannonBullet** cannon_bullet;
 
-	LPDIRECT3DVERTEXBUFFER9 vtx;
 };
 

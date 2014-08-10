@@ -140,3 +140,8 @@ void Player::setPos(D3DXVECTOR3 pos) {
 void Player::setGroundHeight(float ground_height) {
 	ground_pos_y = ground_height;
 }
+
+bool Player::getGrounded() {
+	return is_grounded?true:false;
+}
+

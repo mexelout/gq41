@@ -5,27 +5,16 @@
 #include "Particle.h"
 #include "Camera.h"
 #include "Grid.h"
+#include "ParticleSystem.h"
 
 TestScene::TestScene(void) {
 	camera_rot = D3DXVECTOR2(0, 0);
 	camera_len = 0;
-	particle = NULL;
-	anim_num = 0;
 }
 TestScene::~TestScene(void) {
 }
 TestScene* TestScene::init() {
-	for(int i = 0; i < 8; i++) {
-		vtx_buff_vec.push_back(Common::plane(D3DXVECTOR3(1, 1, 1), D3DXVECTOR2(1.0f/8.0f*i, 0), D3DXVECTOR2(1.0f/8.0f, 1)));
-	}
-	particle = (new Particle)->init();
-	particle->loadTexture("textures/effect_bumb.png");
-	particle->setMaxLife(12)
-		->setLife(0)
-		->setMinScl(D3DXVECTOR3(1, 1, 1))
-		->setMaxScl(D3DXVECTOR3(1, 1, 1))
-		->setAnimNumMax(8)
-		->setUse(false);
+	particle_system = (new ParticleSystem)->init();
 	grid = (new Grid)->init();
 	camera_rot.x = camera_rot.y = (float)M_PI_2 / 2;
 	camera_len = 5;
@@ -39,15 +28,16 @@ void TestScene::update() {
 	}
 	float len = cosf(camera_rot.x);
 	camera_len -= InputMouse::wheel() / 100;
+	camera_len = (camera_len < 1) ? 1 : camera_len;
 	if(camera_rot.x >= (M_PI_2-0.017f)) camera_rot.x = (float)(M_PI_2-0.017f);
 	else if(camera_rot.x <= (-M_PI_2+0.017f)) camera_rot.x = (float)(-M_PI_2+0.017f);
 	Camera::setEye(D3DXVECTOR3(cosf(camera_rot.y)*len, sinf(camera_rot.x), sinf(camera_rot.y)*len)*camera_len);
 
 	if(InputKeyboard::isKey(DIK_UP, Input::Trigger)) {
-		particle->setLife(0)->setUse(true);
+		particle_system->fire();
 	}
+	particle_system->update();
 
-	particle->update();
 	grid->update();
 }
 void TestScene::draw() {
@@ -60,13 +50,12 @@ void TestScene::draw() {
 	device->SetTransform(D3DTS_PROJECTION, &proj);
 
 	grid->draw();
-	particle->draw(vtx_buff_vec[particle->getAnimNum()]);
+	particle_system->draw();
 
 	device->EndScene();
 	device->Present( NULL, NULL, NULL, NULL );
 }
 void TestScene::release() {
-	SAFE_RELEASE_DELETE(particle);
+	SAFE_RELEASE_DELETE(particle_system);
 	SAFE_RELEASE_DELETE(grid);
-	for each(LPDIRECT3DVERTEXBUFFER9 vtx in vtx_buff_vec) SAFE_RELEASE(vtx);
 }

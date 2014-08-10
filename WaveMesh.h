@@ -1,7 +1,7 @@
 #pragma once
 #include "MeshField.h"
 
-class WaveMesh : MeshField {
+class WaveMesh : public MeshField {
 public:
 	WaveMesh(void);
 	~WaveMesh(void);

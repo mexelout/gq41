@@ -74,7 +74,7 @@ void WaveMesh::update() {
 	w_count++;
 
 	if(w_count == 2) {
-		int lottery = Common::random(0, 5);
+		int lottery = Common::random(0, 20);
 		float amp = -1.4f;
 		if(lottery == 0) addForce(60 + Common::random(-2, 2), 2, amp);
 		else if(lottery == 1) addForce(50 + Common::random(-2, 2), 2, amp);
@@ -82,6 +82,21 @@ void WaveMesh::update() {
 		else if(lottery == 3) addForce(30 + Common::random(-2, 2), 2, amp);
 		else if(lottery == 4) addForce(20 + Common::random(-2, 2), 2, amp);
 		else if(lottery == 5) addForce(10 + Common::random(-2, 2), 2, amp);
+		else if(lottery == 6) addForce(50  + Common::random(-2, 2), 61, amp);
+		else if(lottery == 7) addForce(40  + Common::random(-2, 2), 61, amp);
+		else if(lottery == 8) addForce(30  + Common::random(-2, 2), 61, amp);
+		else if(lottery == 9) addForce(20  + Common::random(-2, 2), 61, amp);
+		else if(lottery == 10) addForce(10 + Common::random(-2, 2), 61, amp);
+		else if(lottery == 11) addForce(2, 50  + Common::random(-2, 2), amp);
+		else if(lottery == 12) addForce(2, 40  + Common::random(-2, 2), amp);
+		else if(lottery == 13) addForce(2, 30  + Common::random(-2, 2), amp);
+		else if(lottery == 14) addForce(2, 20  + Common::random(-2, 2), amp);
+		else if(lottery == 15) addForce(2, 10 + Common::random(-2, 2), amp);
+		else if(lottery == 16) addForce(61, 50  + Common::random(-2, 2), amp);
+		else if(lottery == 17) addForce(61, 40  + Common::random(-2, 2), amp);
+		else if(lottery == 18) addForce(61, 30  + Common::random(-2, 2), amp);
+		else if(lottery == 19) addForce(61, 20  + Common::random(-2, 2), amp);
+		else if(lottery == 20) addForce(61, 10 + Common::random(-2, 2), amp);
 		w_count = 0;
 	}
 

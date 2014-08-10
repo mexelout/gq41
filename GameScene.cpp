@@ -10,6 +10,7 @@
 #include "GroundMesh.h"
 #include "WaveMesh.h"
 #include "CannonBullet.h"
+#include "ParticleSystem.h"
 
 GameScene::GameScene(void) {
 	camera_rot = D3DXVECTOR2(0, 0);
@@ -17,9 +18,9 @@ GameScene::GameScene(void) {
 	spara = NULL;
 	ground_mesh = NULL;
 	wave_mesh = NULL;
-	effect_pos = D3DXVECTOR3(0, 0, 0);
 	ship = NULL;
 	cannon_bullet = NULL;
+	particle_system = NULL;
 }
 
 GameScene::~GameScene(void) {
@@ -30,14 +31,10 @@ GameScene* GameScene::init() {
 
 	camera_rot.y = (float)M_PI_2;
 	spara = (new Spara())->init();
-	ground_mesh = (new GroundMesh)->init();
+	ground_mesh = (new GroundMesh)->init()->inputData("stage1");
 	wave_mesh = (new WaveMesh)->init();
 
-	bill_board = new Billboard*[100];
-	for(int i = 0; i < 100; i++) {
-		bill_board[i] = ((new Billboard)->init());
-		bill_board[i]->setScale(D3DXVECTOR3(0, 0, 0));
-	}
+	particle_system = (new ParticleSystem)->init()->setStartScale(D3DXVECTOR3(2, 2, 2))->setEndScale(D3DXVECTOR3(2, 2, 2));
 
 	InputMouse::hideCursor();
 	InputMouse::fixed(true);
@@ -56,27 +53,6 @@ GameScene* GameScene::init() {
 	for(int i = 0; i < 100; i++)
 		cannon_bullet[i] = (new CannonBullet)->init();
 
-	{
-		CUSTOMVERTEX v[] = {
-			CUSTOMVERTEX(D3DXVECTOR3(-0.5f, 0.5f,  0), D3DXVECTOR3(0, 0, -1), 0xffffffff, D3DXVECTOR2(0, 0)),
-			CUSTOMVERTEX(D3DXVECTOR3( 0.5f, 0.5f,  0), D3DXVECTOR3(0, 0, -1), 0xffffffff, D3DXVECTOR2(1, 0)),
-			CUSTOMVERTEX(D3DXVECTOR3(-0.5f, -0.5f, 0), D3DXVECTOR3(0, 0, -1), 0xffffffff, D3DXVECTOR2(0, 1)),
-			CUSTOMVERTEX(D3DXVECTOR3( 0.5f, -0.5f, 0), D3DXVECTOR3(0, 0, -1), 0xffffffff, D3DXVECTOR2(1, 1)),
-		};
-		device->CreateVertexBuffer(
-			sizeof(CUSTOMVERTEX)*4,
-			D3DUSAGE_WRITEONLY,
-			D3DFVF_CUSTOMVERTEX,
-			D3DPOOL_MANAGED,
-			&vtx,
-			NULL
-		);
-		CUSTOMVERTEX *data;
-		vtx->Lock(0, 0, (void**)&data, 0);
-		memcpy(data, v, sizeof(CUSTOMVERTEX)*4);
-		vtx->Unlock();
-
-	}
 
 	return this;
 }
@@ -112,8 +88,17 @@ void GameScene::update() {
 	ppos = spara->pos();
 
 	ship->update();
+	{
+		D3DXVECTOR3 ship_pos(ship->getPos());
+		float height = wave_mesh->getHeight(&ship_pos) + 1;
+		float sub = height - ship_pos.y;
+		ship_pos.y += sub / 50;
+		ship->setPos(ship_pos);
+	}
 
-	// 船乗ってるフラグを用意する予定
+	particle_system->update();
+
+	// 船乗ってるフラグを用意する予定(すぐじゃないよ)
 	if(1) {
 		float ca = ship->amountChangeAngle();
 		float sa = ship->getSwingAngle();
@@ -126,8 +111,8 @@ void GameScene::update() {
 		c = cosf(-ca);
 		s = sinf(-ca);
 		ship_to_ppos = D3DXVECTOR3(ship_to_ppos.x * c - ship_to_ppos.z * s, 0, ship_to_ppos.x * s + ship_to_ppos.z * c);
-		s = sinf(sinf(sa)*0.1f) * 5.1f;
-		float p_s = sinf(sinf(sa - ship->amountChangeSwingAngle())*0.1f) * 5.1f;
+		s = sinf(sinf(sa)*0.05f) * 5.1f;
+		float p_s = sinf(sinf(sa - ship->amountChangeSwingAngle())*0.05f) * 5.1f;
 		float ship_angle = ship->getAngle() - (float)M_PI_2;
 		D3DXVECTOR3 ship_front_vec(-cosf(ship_angle), 0, sinf(ship_angle));
 		D3DXVECTOR3 prev_ship_front_vec(-cosf(ship_angle) * p_s, 0, sinf(ship_angle) * p_s);
@@ -147,19 +132,19 @@ void GameScene::update() {
 			};
 			D3DXVECTOR4 tmp;
 			D3DXVec3Transform(&tmp, &v[front_of_cannon], &world);
-			if(front_of_cannon < 2) {
-				for(int i = 0; i < 100; i++) {
-					if(!cannon_bullet[i]->getUseFlag()) {
-						cannon_bullet[i]->fire(D3DXVECTOR3(tmp.x, tmp.y, tmp.z), D3DXVECTOR3(ship_front_vec.z*-2, 0.1f, ship_front_vec.x*2));
-						break;
+			for(int i = 0; i < 100; i++) {
+				if(!cannon_bullet[i]->getUseFlag()) {
+					D3DXVECTOR3 fire_pos(tmp.x, tmp.y, tmp.z), fire_vec; 
+					if(front_of_cannon < 2) {
+						fire_vec = D3DXVECTOR3(ship_front_vec.z*-2, 0.1f, ship_front_vec.x*2);
+					} else {
+						fire_vec = D3DXVECTOR3(ship_front_vec.z*2, 0.1f, ship_front_vec.x*-2);
 					}
-				}
-			} else {
-				for(int i = 0; i < 100; i++) {
-					if(!cannon_bullet[i]->getUseFlag()) {
-						cannon_bullet[i]->fire(D3DXVECTOR3(tmp.x, tmp.y, tmp.z), D3DXVECTOR3(ship_front_vec.z*2, 0.1f, ship_front_vec.x*-2));
-						break;
-					}
+					cannon_bullet[i]->fire(fire_pos, fire_vec);
+					particle_system->fire(fire_pos + fire_vec*0.1f, fire_vec*0.1f+D3DXVECTOR3(((rand()%10)/100.0f-0.05f), ((rand()%10)/100.0f-0.05f), ((rand()%10)/100.0f-0.05f)));
+					particle_system->fire(fire_pos + fire_vec*0.1f, fire_vec*0.1f+D3DXVECTOR3(((rand()%10)/100.0f-0.05f), ((rand()%10)/100.0f-0.05f), ((rand()%10)/100.0f-0.05f)));
+					particle_system->fire(fire_pos + fire_vec*0.1f, fire_vec*0.1f+D3DXVECTOR3(((rand()%10)/100.0f-0.05f), ((rand()%10)/100.0f-0.05f), ((rand()%10)/100.0f-0.05f)));
+					break;
 				}
 			}
 		}
@@ -187,31 +172,6 @@ void GameScene::update() {
 		}
 	}
 
-	static float s_r = 0;
-	s_r += 0.005f;
-	effect_pos.x = cosf(s_r)*10 + 10;
-	effect_pos.y = 2;
-	effect_pos.z = sinf(s_r)*10 + 10;
-
-	bill_board[0]->setPos(effect_pos);
-	bill_board[0]->setScale(D3DXVECTOR3(1, 1, 1));
-
-	for(int i = 99; i > 0; i--) {
-		bill_board[i]->setPos(bill_board[i-1]->getPos());
-	}
-
-	for(int i = 0; i < 100; i++) {
-		for(int j = i+1; j < 100; j++) {
-			D3DXVECTOR3 vec[2];
-			vec[0] = bill_board[i]->getPos() - Camera::eye();
-			vec[1] = bill_board[j]->getPos() - Camera::eye();
-			if(D3DXVec3LengthSq(&vec[0]) < D3DXVec3LengthSq(&vec[1])) {
-				Billboard* tmp = bill_board[i];
-				bill_board[i] = bill_board[j];
-				bill_board[j] = tmp;
-			}
-		}
-	}
 
 	wave_mesh->update();
 
@@ -235,31 +195,6 @@ void GameScene::draw() {
 
 	spara->draw();
 
-	static D3DXCOLOR col(1, 1, 1, 1);
-	static D3DXCOLOR sub(0.02f, 0.04f, 0.06f, 0);
-	col -= sub;
-	if(col.r < 0) {
-		col.r = 0;
-		sub.r *= -1;
-	} else if(col.r > 1) {
-		col.r = 1;
-		sub.r *= -1;
-	}
-	if(col.g < 0) {
-		col.g = 0;
-		sub.g *= -1;
-	} else if(col.g > 1) {
-		col.g = 1;
-		sub.g *= -1;
-	}
-	if(col.b < 0) {
-		col.b = 0;
-		sub.b *= -1;
-	} else if(col.b > 1) {
-		col.b = 1;
-		sub.b *= -1;
-	}
-
 	ship->draw();
 	for(int i = 0; i < 100; i++) {
 		cannon_bullet[i]->draw();
@@ -268,19 +203,16 @@ void GameScene::draw() {
 	ground_mesh->draw();
 	wave_mesh->draw();
 
-	for(int i = 0; i < 100; i++) {
-		bill_board[i]->setColor(col);
-		bill_board[i]->draw(vtx);
-	}
 
-
+	particle_system->draw();
 	ship->drawGuide();
+
 
 	device->EndScene();
 	device->Present( NULL, NULL, NULL, NULL );
 }
 void GameScene::release() {
-	SAFE_RELEASE(vtx);
+	SAFE_RELEASE_DELETE(particle_system);
 	SAFE_RELEASE_DELETE(spara);
 	SAFE_RELEASE_DELETE(ground_mesh);
 	SAFE_RELEASE_DELETE(wave_mesh);
@@ -289,9 +221,5 @@ void GameScene::release() {
 		SAFE_RELEASE_DELETE(cannon_bullet[i]);
 	}
 	SAFE_DELETE_ARRAY(cannon_bullet);
-	for(int i = 0; i < 100; i++) {
-		SAFE_RELEASE_DELETE(bill_board[i]);
-	}
-	SAFE_DELETE_ARRAY(bill_board);
 }
 

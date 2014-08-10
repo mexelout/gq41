@@ -6,7 +6,7 @@
 #include "GameScene.h"
 #include "SceneManager.h"
 #include "TestScene.h"
-
+#include "EditGroundScene.h"
 
 DebugScene::DebugScene(void) {
 	current = 0;
@@ -24,7 +24,7 @@ void DebugScene::update() {
 	if(InputKeyboard::isKey(DIK_RETURN, Input::Trigger)) {
 		switch(current) {
 			case 0: SceneManager::setScene((new GameScene)->init()); break;
-			case 1: SceneManager::setScene((new GameScene)->init()); break;
+			case 1: SceneManager::setScene((new EditGroundScene)->init()); break;
 			case 2: SceneManager::setScene((new TestScene)->init()); break;
 		}
 	}

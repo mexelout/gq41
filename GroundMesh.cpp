@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "GroundMesh.h"
 #include "ShaderDevise.h"
 #include "Common.h"
@@ -47,6 +48,7 @@ GroundMesh* GroundMesh::init() {
 	}
 
 	setMeshVertex(vertices);
+	calcNor();
 
 	D3DXCreateTextureFromFile(device, "textures/ground.png", &texture);
 	return this;
@@ -60,6 +62,46 @@ void GroundMesh::draw() {
 void GroundMesh::release() {
 	MeshField::release();
 }
+GroundMesh* GroundMesh::inputData(std::string dataname) {
+	FILE* fp = NULL;
+	if(dataname.find(".dat", 0)) {
+		dataname += ".dat";
+	}
+	if(dataname.find("dat/", 0)) {
+		dataname = "dat/" + dataname;
+	}
+	fp = fopen(dataname.c_str(),"rb");
+	if(fp) {
+		int size = 0;
+		fread(&size, sizeof(int), 1, fp);
+		std::vector<float> v;
+		v.resize(size);
+		for(int i = 0; i < size; i++)
+			fread(&v[i], sizeof(float), 1, fp);
+		setMeshVertex(v);
+		calcNor();
+		fclose(fp);
+	}
+	return this;
+}
+GroundMesh* GroundMesh::outputData(std::string dataname) {
+	FILE* fp = NULL;
+	if(dataname.find(".dat", 0)) {
+		dataname += ".dat";
+	}
+	if(dataname.find("dat/", 0)) {
+		dataname = "dat/" + dataname;
+	}
+	fp = fopen(dataname.c_str(),"wb");
+	if(fp) {
+		std::vector<float> v = getMeshVertex();
 
+		int size = v.size();
+		fwrite(&size, sizeof(int), 1, fp);
+		for each(float f in v) fwrite(&f, sizeof(float), 1, fp);
 
+		fclose(fp);
+	}
+	return this;
+}
 

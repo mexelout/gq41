@@ -5,6 +5,7 @@
 
 class Particle;
 class Grid;
+class ParticleSystem;
 
 class TestScene : public Scene {
 public:
@@ -15,12 +16,11 @@ public:
 	void draw();
 	void release();
 
-	Particle* particle;
-	std::vector<LPDIRECT3DVERTEXBUFFER9> vtx_buff_vec;
 	Grid* grid;
 
 	D3DXVECTOR2 camera_rot;
 	float camera_len;
-	int anim_num;
+
+	ParticleSystem* particle_system;
 };
 

@@ -62,8 +62,8 @@ ShaderDevise* ShaderDevise::init(int w, int h, HWND hWnd) {
 	ZeroMemory( &light, sizeof(D3DLIGHT9) );
 	light.Type      = D3DLIGHT_DIRECTIONAL;
 	light.Diffuse.r = light.Diffuse.g = light.Diffuse.b = light.Diffuse.a = 1.0f;
-	light.Specular.r = light.Specular.g = light.Specular.b = light.Specular.a = 0.6f;
-	light.Ambient.r = light.Ambient.g = light.Ambient.b = light.Ambient.a = 0.3f;
+	light.Specular.r = light.Specular.g = light.Specular.b = light.Specular.a = 0.8f;
+	light.Ambient.r = light.Ambient.g = light.Ambient.b = light.Ambient.a = 0.2f;
 	D3DXVECTOR3 vecDir;
 	vecDir = D3DXVECTOR3(-1.0f, -1.0f, -0.1f);
 	D3DXVec3Normalize( (D3DXVECTOR3*)&light.Direction, &vecDir );
@@ -71,6 +71,8 @@ ShaderDevise* ShaderDevise::init(int w, int h, HWND hWnd) {
 	_device->LightEnable( 0, TRUE );
 	light_vec = light.Direction;
 	_device->SetRenderState(D3DRS_SPECULARENABLE, true);
+
+	setupVertexFog(800, 3000, 0xffffffff, D3DFOG_LINEAR, true, 1);
 
 	// ƒtƒHƒ“ƒg‚Ì¶¬
 	int fontsize = 24;
@@ -119,4 +121,32 @@ void ShaderDevise::drawText(const char* text) {
 
 void ShaderDevise::resetOffsetY() {
 	offset_text_y = 0;
+}
+
+void ShaderDevise::setupVertexFog(float start, float end, DWORD color, DWORD mode, bool use_range, float density) {
+ 
+	// Enable fog blending.
+	_device->SetRenderState(D3DRS_FOGENABLE, true);
+ 
+	// Set the fog color.
+	_device->SetRenderState(D3DRS_FOGCOLOR, color);
+
+	// Set fog parameters.
+	if(D3DFOG_LINEAR == mode) {
+		_device->SetRenderState(D3DRS_FOGVERTEXMODE, mode);
+		_device->SetRenderState(D3DRS_FOGSTART, *(DWORD *)(&start));
+		_device->SetRenderState(D3DRS_FOGEND,   *(DWORD *)(&end));
+	} else {
+		_device->SetRenderState(D3DRS_FOGVERTEXMODE, mode);
+		_device->SetRenderState(D3DRS_FOGDENSITY, *(DWORD *)(&density));
+	}
+
+	// Enable range-based fog if desired (only supported for
+	//   vertex fog). For this example, it is assumed that UseRange
+	//   is set to a nonzero value only if the driver exposes the 
+	//   D3DPRASTERCAPS_FOGRANGE capability.
+	// Note: This is slightly more performance intensive
+	//   than non-range-based fog.
+	if(use_range)
+		_device->SetRenderState(D3DRS_RANGEFOGENABLE, true);
 }

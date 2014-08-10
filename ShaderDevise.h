@@ -18,6 +18,7 @@ public:
 
 	static void drawText(const char* text);
 	static void resetOffsetY();
+	static void setupVertexFog(float start, float end, DWORD color, DWORD mode, bool use_range, float density);
 private:
 	static LPDIRECT3D9 _d3d;
 	static LPDIRECT3DDEVICE9 _device;
