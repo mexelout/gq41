@@ -22,7 +22,7 @@ protected:
 	D3DCOLOR color;
 	std::vector<D3DXVECTOR3> nors;
 	// 頂点メッシュの高さの設定
-	void setMeshVertex(std::vector<float> vertices);
+	void setMeshVertex(std::vector<float> vertices, D3DXVECTOR2 uv_offset = D3DXVECTOR2(0, 0));
 	// 頂点メッシュの高さの取得
 	std::vector<float> getMeshVertex();
 };

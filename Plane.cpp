@@ -24,7 +24,7 @@ Plane* Plane::init(LPDIRECT3DDEVICE9 device) {
 	LPD3DXBUFFER code;
 	LPD3DXBUFFER error;
 
-	D3DXCompileShaderFromFile("shader.fx", NULL, NULL,
+	D3DXCompileShaderFromFile("shader.hlsl", NULL, NULL,
 								"vertexShaderTexture", "vs_2_0", 0,
 								&code, &error, &_vs_constant_table);
 
@@ -38,7 +38,7 @@ Plane* Plane::init(LPDIRECT3DDEVICE9 device) {
 	device->CreateVertexShader((DWORD*)code->GetBufferPointer(), &_vs);
 	code->Release();
 
-	D3DXCompileShaderFromFile("shader.fx", NULL, NULL,
+	D3DXCompileShaderFromFile("shader.hlsl", NULL, NULL,
 								"pixelShaderTexture", "ps_2_0", 0,
 								&code, &error, &_ps_constant_table);
 

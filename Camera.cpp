@@ -2,7 +2,7 @@
 #include "Common.h"
 
 D3DXVECTOR3 Camera::_eye(3, 3, 3), Camera::_at(0, 0, 0), Camera::_up(0, 1, 0);
-D3DXMATRIX Camera::_view, Camera::_projection;
+D3DXMATRIX Camera::_view, Camera::_projection, Camera::_ortho;
 
 Camera::Camera(void) {
 }
@@ -19,7 +19,8 @@ void Camera::init() {
 	);
 
 	// ŽË‰e•ÏŠ·
-	D3DXMatrixPerspectiveFovLH(&_projection, D3DXToRadian(45), Common::window_width/Common::window_height, 0.1f, 10000.0f);
+	D3DXMatrixPerspectiveFovLH(&_projection, D3DXToRadian(45), Common::window_width/Common::window_height, 1.0f, 1000.0f);
+	D3DXMatrixOrthoLH(&_ortho, Common::window_width, Common::window_height, -1, 1);
 }
 const D3DXMATRIX& Camera::view() {
 	static float angle = 0;
@@ -38,6 +39,10 @@ const D3DXMATRIX& Camera::view() {
 }
 const D3DXMATRIX& Camera::projection() {
 	return _projection;
+}
+
+const D3DXMATRIX Camera::ortho() {
+	return _ortho;
 }
 
 void Camera::setEye(D3DXVECTOR3 eye) {

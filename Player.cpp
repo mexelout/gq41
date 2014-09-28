@@ -77,24 +77,31 @@ void Player::updateAction() {
 }
 
 void Player::updateGravity() {
-	if(InputKeyboard::isKey(DIK_SPACE, Input::Trigger) && is_grounded) {
-		_speed.y = 0.8f * 0.5f;
+	static float game_speed = 0.5f;
+	_speed.y -= (4.9f * 0.016f * game_speed);
+
+	float new_y = _pos.y - _speed.y;
+	if(ground_pos_y + 1 < new_y) {
+		is_grounded = false;
 	}
 
-	if(_pos.y == ground_pos_y && _speed.y == 0) {
-		_speed.y = -10;
+	if(InputKeyboard::isKey(DIK_SPACE, Input::Trigger) && is_grounded) {
+		_speed.y = 0.8f * game_speed;
+		is_grounded = false;
+	}
+
+	if(is_grounded) {
+		_speed.y = -10 * game_speed;
 	}
 	
 	_pos.y += _speed.y;
-	_speed.y -= (4.9f * 0.016f*0.5f);
-
+	
 	is_grounded = false;
 	if(ground_pos_y > _pos.y) {
 		_pos.y = ground_pos_y;
 		_speed.y = 0;
 		is_grounded = true;
 	}
-
 }
 
 

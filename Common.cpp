@@ -1,3 +1,9 @@
+#pragma comment(lib, "dxguid.lib")
+#pragma comment(lib, "d3d9.lib")
+#pragma comment(lib, "d3dx9.lib")
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "dsound.lib")
+
 #include <Windows.h>
 #include <stdarg.h>
 #include "Common.h"
@@ -6,10 +12,13 @@
 
 const float Common::screen_width = (float)GetSystemMetrics(SM_CXSCREEN);
 const float Common::screen_height = (float)GetSystemMetrics(SM_CYSCREEN );
-const float Common::window_width = 16 * 100;
-const float Common::window_height = 9 * 100;
+const float Common::window_width = 16 * 70;
+const float Common::window_height = 9 * 70;
 
 const D3DXMATRIX Common::identity = *D3DXMatrixIdentity(&D3DXMATRIX());
+const D3DXVECTOR2 Common::vec2zero(0, 0);
+const D3DXVECTOR3 Common::vec3zero(0, 0, 0);
+const D3DXVECTOR4 Common::vec4zero(0, 0, 0, 0);
 
 Common::Common() {
 

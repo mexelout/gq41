@@ -6,6 +6,8 @@
 class Particle;
 class Grid;
 class ParticleSystem;
+class Rectangle2D;
+
 
 class TestScene : public Scene {
 public:
@@ -22,5 +24,7 @@ public:
 	float camera_len;
 
 	ParticleSystem* particle_system;
+
+	Rectangle2D* rectangle;
 };
 

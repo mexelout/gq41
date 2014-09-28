@@ -1,7 +1,3 @@
-#pragma comment(lib, "dxguid.lib")
-#pragma comment(lib, "d3d9.lib")
-#pragma comment(lib, "d3dx9.lib")
-#pragma comment(lib, "winmm.lib")
 
 #include <windows.h>
 #include <tchar.h>
@@ -20,6 +16,9 @@
 #include "GameScene.h"
 #include "DebugScene.h"
 #include "SceneManager.h"
+#include "SoundManager.h"
+#include "WindowManager.h"
+#include "TextureManager.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
 	switch(msg){
@@ -39,11 +38,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
 	}
 }
 
+
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow) {
 
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(133);
+	//_CrtSetBreakAlloc(128);
 #endif
 	MSG msg; HWND hWnd;
 	WNDCLASSEX wcex ={sizeof(WNDCLASSEX), CS_HREDRAW | CS_VREDRAW, WndProc, 0, 0, hInstance, NULL, LoadCursor(NULL , IDC_ARROW),
@@ -61,6 +61,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		NULL, NULL, hInstance, NULL)))
 		return 0;
 
+	WindowManager::inst().setInst(hInstance);
+	WindowManager::inst().setWnd(hWnd);
+	TextureManager::inst();
+
 	ShaderDevise* sd = (new ShaderDevise())->init(w, h, hWnd);
 
 	ShowWindow(hWnd, nCmdShow);
@@ -70,6 +74,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	SceneManager::init();
 
 	DWORD fps = 60;
+
+	SoundManager::inst().init().play();
+
+
+
+
 	// メッセージ ループ
 	do{
 		DWORD start_time, end_time, pass_time;
@@ -111,7 +121,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	} while(msg.message != WM_QUIT);
 
+	SoundManager::inst().release();
 	SceneManager::release();
+	TextureManager::inst().releaseAll();
 	Input::release();
 	SAFE_RELEASE_DELETE(sd);
 

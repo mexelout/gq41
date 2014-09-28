@@ -34,6 +34,7 @@ void ParticleSystem::release() {
 	particles.clear();
 	for each(LPDIRECT3DVERTEXBUFFER9 v in vtxs) SAFE_RELEASE(v);
 	vtxs.clear();
+	std::vector<LPDIRECT3DVERTEXBUFFER9>().swap (vtxs);
 }
 
 void ParticleSystem::fire(D3DXVECTOR3 pos, D3DXVECTOR3 speed, bool gravity) {

@@ -58,8 +58,8 @@ GameScene* GameScene::init() {
 }
 void GameScene::update() {
 	float len = cosf(camera_rot.x);
-	camera_rot.y -= InputMouse::move().x/100;
-	camera_rot.x -= InputMouse::move().y/100;
+	camera_rot.y -= InputMouse::move().x/200;
+	camera_rot.x -= InputMouse::move().y/200;
 	if(camera_rot.x >= (M_PI_2-0.017f)) camera_rot.x = (float)(M_PI_2-0.017f);
 	else if(camera_rot.x <= (-M_PI_2+0.017f)) camera_rot.x = (float)(-M_PI_2+0.017f);
 

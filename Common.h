@@ -15,6 +15,9 @@ public:
 	static const float window_width;
 	static const float window_height;
 	static const D3DXMATRIX identity;
+	static const D3DXVECTOR2 vec2zero;
+	static const D3DXVECTOR3 vec3zero;
+	static const D3DXVECTOR4 vec4zero;
 	static float random(float min, float max);
 	static int random(int min, int max);
 	static LPDIRECT3DVERTEXBUFFER9 plane(D3DXVECTOR3 scl = D3DXVECTOR3(1, 1, 1), D3DXVECTOR2 uv_pos = D3DXVECTOR2(0, 0), D3DXVECTOR2 uv_scl = D3DXVECTOR2(1, 1));

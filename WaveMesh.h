@@ -13,5 +13,6 @@ public:
 	void addForce(int x, int z, float amp);
 private:
 	std::vector<float> old_mesh_height;
+	D3DXVECTOR2 uv_offset;
 };
 

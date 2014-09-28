@@ -2,15 +2,21 @@
 #include "ShaderDevise.h"
 #include "Vertex.h"
 #include "Common.h"
+#include "TextureManager.h"
 
 WaveMesh::WaveMesh(void) {
+	uv_offset = Common::vec2zero;
 }
 
 WaveMesh::~WaveMesh(void) {
 }
 
 WaveMesh* WaveMesh::init() {
-	color = 0x880000ff;
+	auto device = ShaderDevise::device();
+
+	D3DXCreateTextureFromFile(device, "textures/water.png", &texture);
+
+	color = 0x88ffffff;
 	cell_size = 30;
 	MeshField::init();
 	old_mesh_height = getMeshVertex();
@@ -128,7 +134,11 @@ void WaveMesh::update() {
 			mesh_height[i*horizontal+j] = ynew[i*horizontal+j];
 		}
 	}
-	setMeshVertex(mesh_height);
+
+	uv_offset.x += 0.005f;
+	uv_offset.y += 0.005f;
+
+	setMeshVertex(mesh_height, uv_offset);
 	calcNor();
 	MeshField::update();
 }
@@ -140,9 +150,11 @@ void WaveMesh::draw() {
 	mat.Ambient.r = mat.Ambient.g = mat.Ambient.b = mat.Ambient.a = 0.0f;
 	mat.Specular.r = mat.Specular.g = mat.Specular.b = mat.Specular.a = 1;
 	mat.Power = 10;
+	//TextureManager::inst().applyTexture(tex_num, 0, device);
 	device->SetMaterial(&mat);
 	MeshField::draw();
 	device->SetMaterial(&tmp_mat);
+	device->SetTexture(0, NULL);
 }
 void WaveMesh::release() {
 	MeshField::release();

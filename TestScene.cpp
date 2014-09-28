@@ -6,10 +6,15 @@
 #include "Camera.h"
 #include "Grid.h"
 #include "ParticleSystem.h"
+//#include "SoundManager.h"
+#include "Rectangle2D.h"
 
 TestScene::TestScene(void) {
 	camera_rot = D3DXVECTOR2(0, 0);
 	camera_len = 0;
+	particle_system = NULL;
+	grid = NULL;
+	rectangle = NULL;
 }
 TestScene::~TestScene(void) {
 }
@@ -19,6 +24,11 @@ TestScene* TestScene::init() {
 	camera_rot.x = camera_rot.y = (float)M_PI_2 / 2;
 	camera_len = 5;
 	Camera::setAt(D3DXVECTOR3(0, 0, 0));
+//	SoundManager::inst().init();
+//	SoundManager::inst().play();
+
+	rectangle = (new Rectangle2D)->init();
+
 	return this;
 }
 void TestScene::update() {
@@ -39,6 +49,8 @@ void TestScene::update() {
 	particle_system->update();
 
 	grid->update();
+
+	rectangle->update();
 }
 void TestScene::draw() {
 	LPDIRECT3DDEVICE9 device = ShaderDevise::device();
@@ -52,10 +64,20 @@ void TestScene::draw() {
 	grid->draw();
 	particle_system->draw();
 
+	view = Common::identity;
+	proj = Camera::ortho();
+
+	device->SetTransform(D3DTS_VIEW, &view);
+	device->SetTransform(D3DTS_PROJECTION, &proj);
+
+	rectangle->draw();
+
 	device->EndScene();
 	device->Present( NULL, NULL, NULL, NULL );
 }
 void TestScene::release() {
+//	SoundManager::inst().release();
 	SAFE_RELEASE_DELETE(particle_system);
 	SAFE_RELEASE_DELETE(grid);
+	SAFE_RELEASE_DELETE(rectangle);
 }

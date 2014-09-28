@@ -20,7 +20,7 @@ WaveScene* WaveScene::init() {
 	LPD3DXBUFFER code;
 	LPD3DXBUFFER error;
 
-	D3DXCompileShaderFromFile("shader.fx", NULL, NULL,
+	D3DXCompileShaderFromFile("shader.hlsl", NULL, NULL,
 								"vertexShader3D", "vs_2_0", 0,
 								&code, &error, &vs_constant_table);
 
