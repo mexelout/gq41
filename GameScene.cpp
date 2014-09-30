@@ -11,6 +11,7 @@
 #include "WaveMesh.h"
 #include "CannonBullet.h"
 #include "ParticleSystem.h"
+#include "Rectangle2D.h"
 
 GameScene::GameScene(void) {
 	camera_rot = D3DXVECTOR2(0, 0);
@@ -21,6 +22,7 @@ GameScene::GameScene(void) {
 	ship = NULL;
 	cannon_bullet = NULL;
 	particle_system = NULL;
+	camera_underwater_rectangle = NULL;
 }
 
 GameScene::~GameScene(void) {
@@ -53,6 +55,9 @@ GameScene* GameScene::init() {
 	for(int i = 0; i < 100; i++)
 		cannon_bullet[i] = (new CannonBullet)->init();
 
+	camera_underwater_rectangle = (new Rectangle2D)->init();
+	camera_underwater_rectangle->setSize(D3DXVECTOR2(Common::window_width, Common::window_height));
+	camera_underwater_rectangle->setColor(D3DXCOLOR(0.2f, 0.2f, 0.8f, 0.2f));
 
 	return this;
 }
@@ -179,9 +184,13 @@ void GameScene::update() {
 		cannon_bullet[i]->update();
 		cannon_bullet[i]->hitCheckMeshField((MeshField*)wave_mesh);
 	}
+
+	camera_underwater_rectangle->update();
 }
 void GameScene::draw() {
 	LPDIRECT3DDEVICE9 device = ShaderDevise::device();
+
+	bool is_underwater = wave_mesh->getHeight(&Camera::eye()) > Camera::eye().y;
 
 	device->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xff191970, 1.0f, 0 );
 	device->BeginScene();
@@ -201,12 +210,22 @@ void GameScene::draw() {
 	}
 
 	ground_mesh->draw();
-	wave_mesh->draw();
 
+	if(is_underwater) device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+	wave_mesh->draw();
+	if(is_underwater) device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
 	particle_system->draw();
 	ship->drawGuide();
 
+	view = Common::identity;
+	proj = Camera::ortho();
+
+	device->SetTransform(D3DTS_VIEW, &view);
+	device->SetTransform(D3DTS_PROJECTION, &proj);
+
+	if(is_underwater)
+		camera_underwater_rectangle->draw();
 
 	device->EndScene();
 	device->Present( NULL, NULL, NULL, NULL );
@@ -217,6 +236,7 @@ void GameScene::release() {
 	SAFE_RELEASE_DELETE(ground_mesh);
 	SAFE_RELEASE_DELETE(wave_mesh);
 	SAFE_RELEASE_DELETE(ship);
+	SAFE_RELEASE_DELETE(camera_underwater_rectangle);
 	for(int i = 0; i < 100; i++) {
 		SAFE_RELEASE_DELETE(cannon_bullet[i]);
 	}

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <d3dx9.h>
+#include "ShaderPack.hpp"
 
 class Particle;
 
@@ -34,5 +35,7 @@ private:
 	D3DXVECTOR3 end_scl;
 	D3DXVECTOR3 force_vec;
 	float force_range;
+
+	ShaderPack ps_alpha_test_clip;
 };
 

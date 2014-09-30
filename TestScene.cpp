@@ -44,7 +44,7 @@ void TestScene::update() {
 	Camera::setEye(D3DXVECTOR3(cosf(camera_rot.y)*len, sinf(camera_rot.x), sinf(camera_rot.y)*len)*camera_len);
 
 	if(InputKeyboard::isKey(DIK_UP, Input::Trigger)) {
-		particle_system->fire();
+		particle_system->fire(D3DXVECTOR3(0, 1, 0), D3DXVECTOR3(0, 0, 0.02f), true);
 	}
 	particle_system->update();
 
@@ -70,7 +70,7 @@ void TestScene::draw() {
 	device->SetTransform(D3DTS_VIEW, &view);
 	device->SetTransform(D3DTS_PROJECTION, &proj);
 
-	rectangle->draw();
+	//rectangle->draw();
 
 	device->EndScene();
 	device->Present( NULL, NULL, NULL, NULL );

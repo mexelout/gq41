@@ -75,4 +75,18 @@ Rectangle2D* Rectangle2D::setAngle(float angle) {
 	this->angle = angle;
 	return this;
 }
+Rectangle2D* Rectangle2D::setColor(D3DXCOLOR color) {
+	CUSTOMVERTEX* data = (CUSTOMVERTEX*)Common::getVtxDataWithLock(vtx);
 
+	data[0].color = color;
+	data[1].color = color;
+	data[2].color = color;
+	data[3].color = color;
+
+	vtx->Unlock();
+
+	return this;
+}
+Rectangle2D* Rectangle2D::loadTexture(std::string filename) {
+	return this;
+}

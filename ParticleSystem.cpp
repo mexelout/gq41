@@ -1,6 +1,7 @@
 #include "ParticleSystem.h"
 #include "Particle.h"
 #include "Common.h"
+#include "ShaderDevise.h"
 
 ParticleSystem::ParticleSystem(void) {
 	force_vec = D3DXVECTOR3(0, 0, 0);
@@ -15,6 +16,8 @@ ParticleSystem::~ParticleSystem(void) {
 }
 
 ParticleSystem* ParticleSystem::init() {
+	// alphaが0.5f以下になったら点を打たないピクセルシェーダ
+	ps_alpha_test_clip.loadFunc(ShaderDevise::device(), "alpha_test_clip.hlsl", "psAlphaTestClip", "ps_2_0");
 	return loadTexture("textures/effect_bumb.png")
 			->setMaxLife(12)
 			->setEndScale(D3DXVECTOR3(1, 1, 1))
@@ -26,8 +29,11 @@ void ParticleSystem::update() {
 	for each(Particle* p in particles) p->update();
 }
 void ParticleSystem::draw() {
+	auto device = ShaderDevise::device();
+	device->SetPixelShader(ps_alpha_test_clip.ps);
 	for each(Particle* p in particles)
 		p->draw(vtxs[p->getAnimNum()]);
+	device->SetPixelShader(NULL);
 }
 void ParticleSystem::release() {
 	for each(Particle* p in particles) SAFE_RELEASE_DELETE(p);
@@ -35,6 +41,7 @@ void ParticleSystem::release() {
 	for each(LPDIRECT3DVERTEXBUFFER9 v in vtxs) SAFE_RELEASE(v);
 	vtxs.clear();
 	std::vector<LPDIRECT3DVERTEXBUFFER9>().swap (vtxs);
+	ps_alpha_test_clip.release();
 }
 
 void ParticleSystem::fire(D3DXVECTOR3 pos, D3DXVECTOR3 speed, bool gravity) {

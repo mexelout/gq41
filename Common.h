@@ -21,6 +21,7 @@ public:
 	static float random(float min, float max);
 	static int random(int min, int max);
 	static LPDIRECT3DVERTEXBUFFER9 plane(D3DXVECTOR3 scl = D3DXVECTOR3(1, 1, 1), D3DXVECTOR2 uv_pos = D3DXVECTOR2(0, 0), D3DXVECTOR2 uv_scl = D3DXVECTOR2(1, 1));
+	static void* getVtxDataWithLock(LPDIRECT3DVERTEXBUFFER9 vtx);
 private:
 };
 

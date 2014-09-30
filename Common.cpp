@@ -110,4 +110,10 @@ LPDIRECT3DVERTEXBUFFER9 Common::plane(D3DXVECTOR3 scl, D3DXVECTOR2 uv_pos, D3DXV
 	return vtx;
 }
 
+void* Common::getVtxDataWithLock(LPDIRECT3DVERTEXBUFFER9 vtx) {
+	CUSTOMVERTEX* data;
+	vtx->Lock(0, 0, (void**)&data, 0);
+	return (void*)data;
+}
+
 // end line

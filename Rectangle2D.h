@@ -1,5 +1,6 @@
 #pragma once
 #include <d3dx9.h>
+#include <string>
 
 class Rectangle2D {
 public:
@@ -17,6 +18,8 @@ public:
 	Rectangle2D* setPos(D3DXVECTOR3 pos);
 	Rectangle2D* setSize(D3DXVECTOR2 size);
 	Rectangle2D* setAngle(float angle);
+	Rectangle2D* setColor(D3DXCOLOR color);
+	Rectangle2D* loadTexture(std::string filename);
 
 protected:
 	LPDIRECT3DVERTEXBUFFER9 vtx;

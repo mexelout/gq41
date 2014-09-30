@@ -243,9 +243,15 @@
     <ClInclude Include="Rectangle2D.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderPack.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
+    <None Include="alpha_test_clip.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </None>
   </ItemGroup>

@@ -10,6 +10,7 @@ class Ship;
 class WaveMesh;
 class CannonBullet;
 class ParticleSystem;
+class Rectangle2D;
 
 class GameScene : public Scene {
 public:
@@ -36,5 +37,6 @@ private:
 
 	CannonBullet** cannon_bullet;
 
+	Rectangle2D* camera_underwater_rectangle;
 };
 
