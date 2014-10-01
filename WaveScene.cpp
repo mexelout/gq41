@@ -129,7 +129,6 @@ void WaveScene::draw() {
 	spara->draw();
 
 	device->EndScene();
-	device->Present( NULL, NULL, NULL, NULL );
 }
 void WaveScene::release() {
 	if(vertex_shader) vertex_shader->Release();

@@ -219,7 +219,6 @@ void EditGroundScene::draw() {
 	wave_mesh->draw();
 
 	device->EndScene();
-	device->Present( NULL, NULL, NULL, NULL );
 }
 void EditGroundScene::release() {
 	SAFE_RELEASE_DELETE(ground_mesh);

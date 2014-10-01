@@ -96,7 +96,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshField.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="MultiPlane.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Plane.cpp" />
@@ -132,7 +131,6 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="MeshField.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="MultiPlane.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Plane.h" />

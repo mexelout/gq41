@@ -34,9 +34,6 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="MultiPlane.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="GameScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
@@ -157,9 +154,6 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="GameScene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="MultiPlane.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">

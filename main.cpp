@@ -24,10 +24,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
 	switch(msg){
 		case WM_CREATE:
 			return 0;
-		case WM_KEYDOWN:
-			if(wParam == VK_ESCAPE)
-				DestroyWindow(hWnd);
-			return 0;
 		case WM_MOUSEMOVE:
 			return 0;
 		case WM_DESTROY:

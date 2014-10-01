@@ -38,7 +38,6 @@ GameScene* GameScene::init() {
 
 	particle_system = (new ParticleSystem)->init()->setStartScale(D3DXVECTOR3(2, 2, 2))->setEndScale(D3DXVECTOR3(2, 2, 2));
 
-	InputMouse::hideCursor();
 	InputMouse::fixed(true);
 
 	ship = (new Ship)->init();
@@ -97,7 +96,7 @@ void GameScene::update() {
 		D3DXVECTOR3 ship_pos(ship->getPos());
 		float height = wave_mesh->getHeight(&ship_pos) + 1;
 		float sub = height - ship_pos.y;
-		ship_pos.y += sub / 50;
+		ship_pos.y += sub;
 		ship->setPos(ship_pos);
 	}
 
@@ -228,9 +227,9 @@ void GameScene::draw() {
 		camera_underwater_rectangle->draw();
 
 	device->EndScene();
-	device->Present( NULL, NULL, NULL, NULL );
 }
 void GameScene::release() {
+	InputMouse::fixed(false);
 	SAFE_RELEASE_DELETE(particle_system);
 	SAFE_RELEASE_DELETE(spara);
 	SAFE_RELEASE_DELETE(ground_mesh);

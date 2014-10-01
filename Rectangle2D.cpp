@@ -21,7 +21,6 @@ Rectangle2D* Rectangle2D::init() {
 	pos = Common::vec3zero;
 	size = D3DXVECTOR2(256, 256);
 	angle = 0;
-	//tex_num = TextureManager::inst().loadTexture("filename", device);
 
 	return this;
 }
@@ -88,5 +87,8 @@ Rectangle2D* Rectangle2D::setColor(D3DXCOLOR color) {
 	return this;
 }
 Rectangle2D* Rectangle2D::loadTexture(std::string filename) {
+	auto device = ShaderDevise::device();
+	tex_num = TextureManager::inst().loadTexture(filename, device);
+
 	return this;
 }

@@ -7,25 +7,44 @@
 #include "SceneManager.h"
 #include "TestScene.h"
 #include "EditGroundScene.h"
+#include "WindowManager.h"
 
 DebugScene::DebugScene(void) {
 	current = 0;
 }
 
 DebugScene::~DebugScene(void) {
+	std::vector<std::string>().swap(menu);
 }
 
 DebugScene* DebugScene::init() {
+	menu.push_back("Game");
+	menu.push_back("EditGround");
+	menu.push_back("Test");
+	menu.push_back("Exit");
 	return this;
 }
 void DebugScene::update() {
-	current -= (InputKeyboard::isKey(DIK_UP, Input::Trigger) && current > 0) ? 1 : 0;
-	current += (InputKeyboard::isKey(DIK_DOWN, Input::Trigger) && current < 2) ? 1 : 0;
+	if(InputKeyboard::isKey(DIK_UP, Input::Trigger)) {
+		if(current > 0) {
+			current -= 1;
+		} else {
+			current = (int)menu.size()-1;
+		}
+	}
+	if(InputKeyboard::isKey(DIK_DOWN, Input::Trigger)) {
+		if(current < (int)menu.size()-1) {
+			current += 1;
+		} else {
+			current = 0;
+		}
+	}
 	if(InputKeyboard::isKey(DIK_RETURN, Input::Trigger)) {
 		switch(current) {
-			case 0: SceneManager::setScene((new GameScene)->init()); break;
-			case 1: SceneManager::setScene((new EditGroundScene)->init()); break;
-			case 2: SceneManager::setScene((new TestScene)->init()); break;
+			case 0: SceneManager::setNextScene((new GameScene)); break;
+			case 1: SceneManager::setNextScene((new EditGroundScene)); break;
+			case 2: SceneManager::setNextScene((new TestScene)); break;
+			default: DestroyWindow(WindowManager::inst().getWnd()); break;
 		}
 	}
 }
@@ -34,20 +53,14 @@ void DebugScene::draw() {
 	device->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xff000000, 1.0f, 0 );
 	device->BeginScene();
 
-	std::array<std::string, 3> menu = {
-		"Game",
-		"EditGround",
-		"Test",
-	};
-	menu[current] += "Å©";
 	for(int i = 0, len = menu.size(); i < len; i++) {
-		ShaderDevise::drawText(menu[i].c_str());
+		ShaderDevise::drawText((menu[i] + ((i == current) ? "*" : "")).c_str());
 	}
 
 	device->EndScene();
-	device->Present( NULL, NULL, NULL, NULL );
 }
 void DebugScene::release() {
+	DebugScene::~DebugScene();
 }
 
 

@@ -1,5 +1,8 @@
 #pragma once
 #include "scene.h"
+#include <string>
+#include <vector>
+
 class DebugScene : public Scene {
 public:
 	DebugScene(void);
@@ -10,5 +13,6 @@ public:
 	void release();
 private:
 	int current;
+	std::vector<std::string> menu;
 };
 

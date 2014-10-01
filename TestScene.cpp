@@ -24,8 +24,6 @@ TestScene* TestScene::init() {
 	camera_rot.x = camera_rot.y = (float)M_PI_2 / 2;
 	camera_len = 5;
 	Camera::setAt(D3DXVECTOR3(0, 0, 0));
-//	SoundManager::inst().init();
-//	SoundManager::inst().play();
 
 	rectangle = (new Rectangle2D)->init();
 
@@ -73,10 +71,8 @@ void TestScene::draw() {
 	//rectangle->draw();
 
 	device->EndScene();
-	device->Present( NULL, NULL, NULL, NULL );
 }
 void TestScene::release() {
-//	SoundManager::inst().release();
 	SAFE_RELEASE_DELETE(particle_system);
 	SAFE_RELEASE_DELETE(grid);
 	SAFE_RELEASE_DELETE(rectangle);
