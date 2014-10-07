@@ -6,8 +6,9 @@
 #include "ShaderDevise.h"
 #include "Rectangle2D.h"
 #include "Camera.h"
-
+#include "GameScene.h"
 #include <process.h>
+#include "WindowManager.h"
 
 unsigned __stdcall loadingThread(void *p) {
 	Scene** n_scene = (Scene**)p;
@@ -38,12 +39,20 @@ void SceneManager::init() {
 	InputMouse::hideCursor();
 	if(loading_rect == NULL) loading_rect = (new Rectangle2D)->init()->setSize(D3DXVECTOR2(425, 281))->loadTexture("textures/pirate_ship_clip_art.png");
 	if(loading_background == NULL) loading_background = (new Rectangle2D)->init()->setSize(D3DXVECTOR2(Common::window_width, Common::window_height));
+#ifdef _DEBUG
 	setNextScene(new DebugScene);
+#else
+	setNextScene(new GameScene);
+#endif
 }
 void SceneManager::update() {
 	if(next_scene == NULL) {
 		if(InputKeyboard::isKey(DIK_ESCAPE, Input::Trigger)) {
+#ifdef _DEBUG
 			setNextScene(new DebugScene);
+#else
+			DestroyWindow(WindowManager::inst().getWnd());
+#endif
 		}
 		if(scene && loading_end == true)
 			scene->update();
@@ -66,7 +75,6 @@ void SceneManager::update() {
 		loading_position.x -= 3.f;
 		loading_background->setColor(D3DXCOLOR(1, 1, 1, loading_alpha));
 		loading_rect->setPos(loading_position)->setColor(D3DXCOLOR(1, 1, 1, loading_alpha));
-		//loading_angle += 0.05f;
 
 	}
 }

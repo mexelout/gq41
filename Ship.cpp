@@ -57,18 +57,18 @@ void Ship::update() {
 	float prev_angle = angle;
 	float prev_swing_angle = swing_angle;
 	D3DXVECTOR3 prev_pos(pos);
-	swing_angle += 0.03f;
+	swing_angle += 0.06f;
 
 	if(InputMouse::btn(InputMouse::Right, Input::Press)) {
-		speed += (0.001f * (InputKeyboard::isKey(DIK_W, Input::Press)?1.0f:0.0f));
-		angle_speed += (0.0001f * (InputKeyboard::isKey(DIK_A, Input::Press)?-1.0f:(InputKeyboard::isKey(DIK_D, Input::Press)?1.0f:0.0f)));
+		speed += (0.005f * (InputKeyboard::isKey(DIK_W, Input::Press)?1.0f:0.0f));
+		angle_speed += (0.0005f * (InputKeyboard::isKey(DIK_A, Input::Press)?-1.0f:(InputKeyboard::isKey(DIK_D, Input::Press)?1.0f:0.0f)));
 	}
 	speed -= 0.00025f;
 	angle_speed *= 0.989f;
 	if(speed < 0) speed = 0;
-	else if(speed > 0.3f) speed = 0.3f;
-	if(angle_speed < -0.03f) angle_speed = -0.003f;
-	else if(angle_speed > 0.03f) angle_speed = 0.003f;
+	else if(speed > 0.9f) speed = 0.9f;
+	if(angle_speed < -0.006f) angle_speed = -0.006f;
+	else if(angle_speed > 0.006f) angle_speed = 0.006f;
 
 	pos += D3DXVECTOR3(-cosf(angle-(float)M_PI_2), 0, sinf(angle-(float)M_PI_2))*speed;
 	angle += angle_speed;

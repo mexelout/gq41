@@ -58,6 +58,18 @@ GameScene* GameScene::init() {
 	camera_underwater_rectangle->setSize(D3DXVECTOR2(Common::window_width, Common::window_height));
 	camera_underwater_rectangle->setColor(D3DXCOLOR(0.2f, 0.2f, 0.8f, 0.2f));
 
+	{
+		float len = cosf(camera_rot.x);
+		D3DXVECTOR3 ppos = spara->pos();
+		Camera::setAt(ppos + (D3DXVECTOR3(cosf(camera_rot.y)*len, sinf(camera_rot.x), sinf(camera_rot.y)*len)));
+		float length = 1;
+		length += (1.0f - length) * 0.1f;
+		D3DXVECTOR3 dir((spara->pos()+D3DXVECTOR3(0, 2.0f, 0) - Camera::at()));
+		D3DXVec3Normalize(&dir, &dir);
+		dir *= length;
+		Camera::setEye(Camera::at() + dir);
+	}
+
 	return this;
 }
 void GameScene::update() {
