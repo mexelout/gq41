@@ -19,7 +19,7 @@ void Camera::init() {
 	);
 
 	// ŽË‰e•ÏŠ·
-	D3DXMatrixPerspectiveFovLH(&_projection, D3DXToRadian(45), Common::window_width/Common::window_height, 1.0f, 1000.0f);
+	D3DXMatrixPerspectiveFovLH(&_projection, D3DXToRadian(45), Common::window_width/Common::window_height, 0.1f, 5000.0f);
 	D3DXMatrixOrthoLH(&_ortho, Common::window_width, Common::window_height, -1, 1);
 }
 const D3DXMATRIX& Camera::view() {

@@ -13,6 +13,7 @@ public:
 		SOUND();
 		~SOUND();
 		void play();
+		void stop();
 		void release();
 		DSBUFFERDESC dsbdesc;
 		WAVEFORMATEX wf;
@@ -21,10 +22,11 @@ public:
 	}SOUND;
 
 
-	SoundManager& init();
-	void open(SOUND& s, std::string filename);
-	void play();
-	void release();
+	static SoundManager& init();
+	static void open(SOUND& s, std::string filename);
+	static void play();
+	static void stop();
+	static void release();
 
 private:
 	SoundManager(void);

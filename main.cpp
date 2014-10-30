@@ -71,11 +71,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	DWORD fps = 60;
 
-	SoundManager::inst().init().play();
-
-
-
-
 	// メッセージ ループ
 	do{
 		DWORD start_time, end_time, pass_time;

@@ -127,6 +127,15 @@
     <ClCompile Include="Rectangle2D.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="TravelingSalesmanProblemScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticPlane.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Input.h">
@@ -239,6 +248,15 @@
     </ClInclude>
     <ClInclude Include="ShaderPack.hpp">
       <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="TravelingSalesmanProblemScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticPlane.h">
+      <Filter>Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

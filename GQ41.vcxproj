@@ -39,14 +39,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\</OutDir>
-    <IncludePath>C:\Program Files\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -107,8 +108,11 @@
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Spara.cpp" />
+    <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="StaticPlane.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="TravelingSalesmanProblemScene.cpp" />
     <ClCompile Include="WaveMesh.cpp" />
     <ClCompile Include="WaveScene.cpp" />
     <ClCompile Include="WindowManager.cpp" />
@@ -145,8 +149,11 @@
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Spara.h" />
+    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="StaticPlane.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="TravelingSalesmanProblemScene.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="WaveMesh.h" />
     <ClInclude Include="WaveScene.h" />

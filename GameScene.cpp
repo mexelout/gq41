@@ -12,6 +12,7 @@
 #include "CannonBullet.h"
 #include "ParticleSystem.h"
 #include "Rectangle2D.h"
+#include "SoundManager.h"
 
 GameScene::GameScene(void) {
 	camera_rot = D3DXVECTOR2(0, 0);
@@ -69,6 +70,8 @@ GameScene* GameScene::init() {
 		dir *= length;
 		Camera::setEye(Camera::at() + dir);
 	}
+
+	SoundManager::init().play();
 
 	return this;
 }
@@ -222,12 +225,17 @@ void GameScene::draw() {
 
 	ground_mesh->draw();
 
-	if(is_underwater) device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-	wave_mesh->draw();
-	if(is_underwater) device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-
-	particle_system->draw();
-	ship->drawGuide();
+	if(is_underwater) {
+		particle_system->draw();
+		ship->drawGuide();
+		device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+		wave_mesh->draw();
+		device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	} else {
+		wave_mesh->draw();
+		particle_system->draw();
+		ship->drawGuide();
+	}
 
 	view = Common::identity;
 	proj = Camera::ortho();
@@ -241,6 +249,7 @@ void GameScene::draw() {
 	device->EndScene();
 }
 void GameScene::release() {
+	SoundManager::stop();
 	InputMouse::fixed(false);
 	SAFE_RELEASE_DELETE(particle_system);
 	SAFE_RELEASE_DELETE(spara);

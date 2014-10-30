@@ -15,24 +15,24 @@ public:
 	* @param device 描画デバイス
 	* @return 整理番号
 	*/
-	UINT loadTexture(std::string filename, LPDIRECT3DDEVICE9 device);
+	static UINT loadTexture(std::string filename, LPDIRECT3DDEVICE9 device);
 	/** テクスチャ適用
 	* @param idx 整理番号
 	* @param stage ステージ番号
 	* @param device 描画デバイス
 	*/
-	void applyTexture(UINT idx, DWORD stage, LPDIRECT3DDEVICE9 device);
+	static void applyTexture(UINT idx, DWORD stage, LPDIRECT3DDEVICE9 device);
 	/** テクスチャの情報を取得
 	* @param idx 整理番号
 	* @return テクスチャの情報が返ってくる(変更不可)
 	*/
-	const D3DXIMAGE_INFO* getImageInfo(UINT idx);
+	static const D3DXIMAGE_INFO* getImageInfo(UINT idx);
 	/** テクスチャを全開放&スタック消去
 	*/
-	void releaseAll();
+	static void releaseAll();
 	/** テクスチャを再読み込み(デフォルト指定にする為)
 	*/
-	void resetLoad(LPDIRECT3DDEVICE9 device);
+	static void resetLoad(LPDIRECT3DDEVICE9 device);
 protected:
 	/**
 	* コンストラクタ

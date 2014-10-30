@@ -84,7 +84,14 @@ SoundManager::SOUND::~SOUND() {
 }
 
 void SoundManager::SOUND::play() {
-	if(dsb) dsb->Play(0, 0, DSBPLAY_LOOPING);
+	if(dsb) {
+		dsb->SetCurrentPosition(0);
+		dsb->Play(0, 0, DSBPLAY_LOOPING);
+	}
+}
+
+void SoundManager::SOUND::stop() {
+	if(dsb) dsb->Stop();
 }
 
 void SoundManager::SOUND::release() {
@@ -93,18 +100,22 @@ void SoundManager::SOUND::release() {
 }
 
 SoundManager& SoundManager::init() {
-	HWND hWnd = WindowManager::inst().getWnd();
+	SoundManager& sm = inst();
 
-	// サウンドデバイス作成
-	DirectSoundCreate8(NULL, &ds8, NULL);
-	ds8->SetCooperativeLevel(hWnd, DSSCL_PRIORITY);
+	if(sm.ds8 == NULL) {
+		HWND hWnd = WindowManager::inst().getWnd();
 
-	open(sound, "Sound/rock42.wav");
+		// サウンドデバイス作成
+		DirectSoundCreate8(NULL, &sm.ds8, NULL);
+		sm.ds8->SetCooperativeLevel(hWnd, DSSCL_PRIORITY);
+		open(sm.sound, "Sound/rock42.wav");
+	}
 
-	return *this;
+	return sm;
 }
 
 void SoundManager::open(SOUND& s, std::string filename) {
+	SoundManager& sm = inst();
 	// Waveファイルオープン
 	char *data = 0;
 	if(!openWave(filename.c_str(), s.wf, &data, s.size)) {
@@ -119,7 +130,7 @@ void SoundManager::open(SOUND& s, std::string filename) {
 	s.dsbdesc.guid3DAlgorithm = GUID_NULL;
 
 	IDirectSoundBuffer *ptmpBuf = 0;
-	ds8->CreateSoundBuffer(&s.dsbdesc, &ptmpBuf, NULL);
+	sm.ds8->CreateSoundBuffer(&s.dsbdesc, &ptmpBuf, NULL);
 	ptmpBuf->QueryInterface(IID_IDirectSoundBuffer8, (void**)&s.dsb);
 	ptmpBuf->Release();
 	if(s.dsb == 0) {
@@ -138,11 +149,17 @@ void SoundManager::open(SOUND& s, std::string filename) {
 }
 
 void SoundManager::play() {
-	sound.play();
+	SoundManager& sm = inst();
+	sm.sound.play();
 }
 
+void SoundManager::stop() {
+	SoundManager& sm = inst();
+	sm.sound.stop();
+}
 
 void SoundManager::release() {
-	sound.release();
-	SAFE_RELEASE(ds8);
+	SoundManager& sm = inst();
+	sm.sound.release();
+	SAFE_RELEASE(sm.ds8);
 }

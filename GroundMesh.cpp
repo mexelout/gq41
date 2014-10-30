@@ -11,7 +11,7 @@ GroundMesh::~GroundMesh(void) {
 
 GroundMesh* GroundMesh::init() {
 	LPDIRECT3DDEVICE9 device = ShaderDevise::device();
-	cell_size = 15;
+	cell_size = 50;
 	vertical *= 2;
 	horizontal *= 2;
 	MeshField::init();

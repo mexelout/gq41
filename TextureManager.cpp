@@ -17,7 +17,6 @@ TextureManager::TextureManager() {
 /* デストラクタ*/
 TextureManager::~TextureManager() {
 	releaseAll();
-	std::vector<TEXTURE_DATA>().swap(data);
 }
 /** テクスチャ読み込み\n
 * スタックに入りきらなかったら0が返ってくる\m
@@ -27,10 +26,11 @@ TextureManager::~TextureManager() {
 * @return 整理番号
 */
 UINT TextureManager::loadTexture(std::string filename, LPDIRECT3DDEVICE9 device) {
+	TextureManager& t = TextureManager::inst();
 
 	// 同じもの読み込み禁止
-	for(UINT i = 0, len = data.size(); i < len; ++i) {
-		if(filename == data[i].filename) {
+	for(UINT i = 0, len = t.data.size(); i < len; ++i) {
+		if(filename == t.data[i].filename) {
 			return i;
 		}
 	}
@@ -46,9 +46,9 @@ UINT TextureManager::loadTexture(std::string filename, LPDIRECT3DDEVICE9 device)
 
 		// テクスチャバッファ読み込み
 		D3DXCreateTextureFromFileEx(device, filename.c_str(), d.info.Width, d.info.Height, 1, 0, D3DFMT_A8B8G8R8, D3DPOOL_DEFAULT, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0x00000000, NULL, NULL, &d.texture);
-		data.push_back(d);
+		t.data.push_back(d);
 
-		return data.size()-1;
+		return t.data.size() - 1;
 	} else {
 		// 開けねぇ！？
 		MessageBox(NULL, "画像が読み込めねぇよ！", "エラー", MB_ERROR);
@@ -61,17 +61,19 @@ UINT TextureManager::loadTexture(std::string filename, LPDIRECT3DDEVICE9 device)
 * @param pDevice 描画デバイス
 */
 void TextureManager::applyTexture(UINT idx, DWORD stage, LPDIRECT3DDEVICE9 device) {
+	TextureManager& t = TextureManager::inst();
+
 	// 最大以上ならさっさと抜ける
-	if(idx >= data.size()) return;
+	if(idx >= t.data.size()) return;
 
 	// 既に適用済みならさっさと抜ける
-	if(idx_apply == idx) return;
+	if(t.idx_apply == idx) return;
 
 	// テクスチャ適用
-	device->SetTexture(stage, data[idx].texture);
+	device->SetTexture(stage, t.data[idx].texture);
 
 	// 今回設定した番号を保存(次回適用しない為)
-	idx_apply = idx;
+	t.idx_apply = idx;
 }
 /** テクスチャの情報を取得\n
 * 変な数値を引数にするとNULLが返ってくる
@@ -79,22 +81,24 @@ void TextureManager::applyTexture(UINT idx, DWORD stage, LPDIRECT3DDEVICE9 devic
 * @return テクスチャの情報が返ってくる(変更不可)
 */
 const D3DXIMAGE_INFO* TextureManager::getImageInfo(UINT idx) {
-	if(idx >= data.size()) return NULL;
-	return &data[idx].info;
+	TextureManager& t = TextureManager::inst();
+	if(idx >= t.data.size()) return NULL;
+	return &t.data[idx].info;
 }
 /** テクスチャを全開放&スタック消去
 */
 void TextureManager::releaseAll() {
-	for each(TEXTURE_DATA d in data) {
+	TextureManager& t = TextureManager::inst();
+	for each(TEXTURE_DATA d in t.data) {
 		SAFE_RELEASE(d.texture);
 	}
-	data.clear();
-	idx_apply = 0;
-	std::vector<TEXTURE_DATA>().swap(data);
+	t.data.clear();
+	t.idx_apply = 0;
 }
 /** テクスチャを再読み込み(デフォルト指定にする為)
 */
 void TextureManager::resetLoad(LPDIRECT3DDEVICE9 device) {
+	TextureManager& t = TextureManager::inst();
 }
 
 // end file

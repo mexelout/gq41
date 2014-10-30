@@ -8,6 +8,7 @@
 #include "TestScene.h"
 #include "EditGroundScene.h"
 #include "WindowManager.h"
+#include "TravelingSalesmanProblemScene.h"
 
 DebugScene::DebugScene(void) {
 	current = 0;
@@ -20,6 +21,7 @@ DebugScene::~DebugScene(void) {
 DebugScene* DebugScene::init() {
 	menu.push_back("Game");
 	menu.push_back("EditGround");
+	menu.push_back("TravelingSalesmanProblem");
 	menu.push_back("Test");
 	menu.push_back("Exit");
 	return this;
@@ -43,7 +45,8 @@ void DebugScene::update() {
 		switch(current) {
 			case 0: SceneManager::setNextScene((new GameScene)); break;
 			case 1: SceneManager::setNextScene((new EditGroundScene)); break;
-			case 2: SceneManager::setNextScene((new TestScene)); break;
+			case 2: SceneManager::setNextScene((new TravelingSalesmanProblemScene)); break;
+			case 3: SceneManager::setNextScene((new TestScene)); break;
 			default: DestroyWindow(WindowManager::inst().getWnd()); break;
 		}
 	}

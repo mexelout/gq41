@@ -9,6 +9,7 @@
 #include "GameScene.h"
 #include <process.h>
 #include "WindowManager.h"
+#include "TravelingSalesmanProblemScene.h"
 
 unsigned __stdcall loadingThread(void *p) {
 	Scene** n_scene = (Scene**)p;
@@ -42,7 +43,7 @@ void SceneManager::init() {
 #ifdef _DEBUG
 	setNextScene(new DebugScene);
 #else
-	setNextScene(new GameScene);
+	setNextScene(new TravelingSalesmanProblemScene);
 #endif
 }
 void SceneManager::update() {

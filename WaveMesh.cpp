@@ -17,7 +17,7 @@ WaveMesh* WaveMesh::init() {
 	D3DXCreateTextureFromFile(device, "textures/water.png", &texture);
 
 	color = 0x88ffffff;
-	cell_size = 30;
+	cell_size = 100;
 	MeshField::init();
 	old_mesh_height = getMeshVertex();
 	std::vector<float> mesh_height = getMeshVertex();
