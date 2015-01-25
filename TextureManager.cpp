@@ -89,10 +89,11 @@ const D3DXIMAGE_INFO* TextureManager::getImageInfo(UINT idx) {
 */
 void TextureManager::releaseAll() {
 	TextureManager& t = TextureManager::inst();
-	for each(TEXTURE_DATA d in t.data) {
-		SAFE_RELEASE(d.texture);
+	for(int i = 0, len = t.data.size(); i < len; i++) {
+		SAFE_RELEASE(t.data[i].texture);
 	}
-	t.data.clear();
+	std::vector<TextureManager::TEXTURE_DATA>().swap(t.data);
+
 	t.idx_apply = 0;
 }
 /** テクスチャを再読み込み(デフォルト指定にする為)

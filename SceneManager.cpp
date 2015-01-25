@@ -74,6 +74,7 @@ void SceneManager::update() {
 		}
 
 		loading_position.x -= 3.f;
+		if(loading_position.x < -Common::window_width*0.75f) loading_position.x = Common::window_width * 0.75f;
 		loading_background->setColor(D3DXCOLOR(1, 1, 1, loading_alpha));
 		loading_rect->setPos(loading_position)->setColor(D3DXCOLOR(1, 1, 1, loading_alpha));
 
@@ -115,7 +116,7 @@ void SceneManager::release() {
 }
 void SceneManager::setNextScene(Scene* scene) {
 	next_scene = scene;
-	loading_position = D3DXVECTOR3(342, -174, 0);
+	loading_position = D3DXVECTOR3(Common::window_width * 0.75f, -174, 0);
 	loading_alpha = 0;
 	loading_end = false;
 	loading_thread = (HANDLE)_beginthreadex(NULL, 0, loadingThread, &next_scene, 0, NULL);

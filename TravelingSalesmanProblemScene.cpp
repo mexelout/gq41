@@ -9,21 +9,35 @@
 #include <time.h>
 
 // 定数定義
-#define ITEM_NUM 6 // アイテムの数
+#define ITEM_NUM 20 // アイテムの数
 #define GENE_NUM 10 // 遺伝子の数
 #define GENE_LENGTH (ITEM_NUM) // 遺伝子の長さ
 #define CROSS_RATE 0.8 // 交叉の頻度
 #define MUTE_RATE 0.1 // 突然変異の頻度
-#define GENERATON_NUM 50 // 世代交代の数
+#define GENERATON_NUM 10000 // 世代交代の数
 
 const std::string g_weight[] = {"A", "B", "C", "D", "E", "F"}; // 場所名
 const D3DXVECTOR3 g_value [] = {
-	D3DXVECTOR3(0, 1, 0),
-	D3DXVECTOR3(5, 1, 4),
-	D3DXVECTOR3(0, 1, 4),
-	D3DXVECTOR3(-5, 1, 3),
-	D3DXVECTOR3(-5, 1, -3),
-	D3DXVECTOR3(0, 1, -4),
+	D3DXVECTOR3(-14, 1, 62),
+	D3DXVECTOR3(-32, 1, 85),
+	D3DXVECTOR3(-24, 1, 7),
+	D3DXVECTOR3(-22, 1, 75),
+	D3DXVECTOR3(-64, 1, 85),
+	D3DXVECTOR3(-45, 1, -2),
+	D3DXVECTOR3(-29, 1, -46),
+	D3DXVECTOR3(-40, 1, -26),
+	D3DXVECTOR3(-42, 1, -63),
+	D3DXVECTOR3(-98, 1, -12),
+	D3DXVECTOR3( 42, 1, 36),
+	D3DXVECTOR3( 82, 1, 74),
+	D3DXVECTOR3( 41, 1, 75),
+	D3DXVECTOR3( 63, 1, 2),
+	D3DXVECTOR3( 5, 1, 66),
+	D3DXVECTOR3( 86, 1, -34),
+	D3DXVECTOR3( 98, 1, -56),
+	D3DXVECTOR3( 29, 1, -25),
+	D3DXVECTOR3( 26, 1, -75),
+	D3DXVECTOR3( 52, 1, -73),
 }; // 位置
 
 // プロトタイプ宣言
@@ -32,19 +46,21 @@ void Select();
 void Cross();
 void Mute();
 void CalcFit();
-int CalcFitSub(int gene_no);
+float CalcFitSub(int gene_no);
 
 // グローバル変数
 int g_generation; // 世代数
 int g_gene[GENE_NUM][GENE_LENGTH]; // 遺伝子
-int g_fit[GENE_NUM]; // 適応度
-int g_maxFit; // 最高適応度
+float g_fit[GENE_NUM]; // 適応度
+float g_maxFit = 9999; // 最高適応度
 int g_maxGeneration; // 最高世代
 int g_maxIndex; // 最高遺伝子番号
 int g_maxGene[GENE_LENGTH]; // 最高遺伝子
 
 void Init()
 {
+
+	memset(g_gene, -1, sizeof(g_gene));
 	int i, j;
 
 	// 乱数の初期化
@@ -54,7 +70,7 @@ void Init()
 	g_generation = 0;
 
 	// 最高適応度の初期化
-	g_maxFit = 0;
+	g_maxFit = 9999;
 
 	// 最高世代の初期化
 	g_maxGeneration = 0;
@@ -102,10 +118,24 @@ void Cross()
 	int start = rand() % GENE_LENGTH, end = start + rand() % GENE_LENGTH;
 	int *genetic_a = g_gene[rand() % GENE_NUM], *genetic_b = g_gene[rand() % GENE_NUM];
 	if(end > GENE_LENGTH) end = GENE_LENGTH;
+
 	for(int i = start; i < end; i++) {
-		int tmp = genetic_a[i];
-		genetic_a[i] = genetic_b[i];
-		genetic_b[i] = tmp;
+		int tmp_a = genetic_a[i];
+		int tmp_b = genetic_b[i];
+		for(int j = 0; j < GENE_LENGTH; j++) {
+			if(tmp_b == genetic_a[j]) {
+				genetic_a[i] = genetic_a[j];
+				genetic_a[j] = tmp_a;
+				break;
+			}
+		}
+		for(int j = 0; j < GENE_LENGTH; j++) {
+			if(tmp_a == genetic_b[j]) {
+				genetic_b[i] = genetic_b[j];
+				genetic_b[j] = tmp_b;
+				break;
+			}
+		}
 	}
 }
 
@@ -124,7 +154,14 @@ void Mute()
 			if( MUTE_RATE > r ){
 				pos = rand() % GENE_LENGTH;
 				// 数値を反転（突然変異）
-				g_gene[i][pos] ^= 1;
+				int tmp = g_gene[i][pos];
+				for(int k = 0; k < GENE_LENGTH; k++) {
+					if(tmp == g_gene[i][k]) {
+						g_gene[i][pos] = g_gene[i][k];
+						g_gene[i][k] = tmp;
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -135,10 +172,10 @@ void CalcFit()
 {
 	int i;
 
-	int fit; // 適応度
+	float fit; // 適応度
 	int index; // 遺伝子番号
 
-	fit = 0;
+	fit = 9999;
 	index = 0;
 
 	for(i = 0; i < GENE_NUM; i++) {
@@ -146,28 +183,28 @@ void CalcFit()
 		g_fit[i] = CalcFitSub(i);
 
 		// 適応度の最大値を求める
-		if(fit < g_fit[i]) {
+		if(fit > g_fit[i]) {
 			fit = g_fit[i];
 			index = i;
 		}
 	}
 
 	// 表示
-	{
-		int i, j;
+	//{
+	//	int i, j;
 
-		Common::debug("\n******** 世代 = %d ********\n", g_generation);
+	//	Common::debug("\n******** 世代 = %d ********\n", g_generation);
 
-		for(i = 0; i < GENE_NUM; i++) {
-			Common::debug("遺伝子番号[%2d] = ", i);
+	//	for(i = 0; i < GENE_NUM; i++) {
+	//		Common::debug("遺伝子番号[%d] = ", i);
 
-			for(j = 0; j < GENE_LENGTH; j++) {
-				Common::debug("%2d", g_gene[i][j]);
-			}
+	//		for(j = 0; j < GENE_LENGTH; j++) {
+	//			Common::debug("%d", g_gene[i][j]);
+	//		}
 
-			Common::debug(" > 適応度 = %d\n", g_fit[i]);
-		}
-	}
+	//		Common::debug(" > 適応度 = %f\n", g_fit[i]);
+	//	}
+	//}
 
 	// 適応度が最高適応度よりも大きい場合
 	if(fit < g_maxFit) {
@@ -182,19 +219,19 @@ void CalcFit()
 
 		// 情報を出力
 		Common::debug("!!!! より良い遺伝子を発見 !!!!\n");
-		Common::debug("遺伝子[%2d] = ", g_maxIndex);
+		Common::debug("遺伝子[%d] = ", g_maxIndex);
 
 		for(i = 0; i < GENE_LENGTH; i++) {
-			Common::debug("%2d", g_maxGene[i]);
+			Common::debug("%d", g_maxGene[i]);
 		}
 
 		Common::debug("\n");
-		Common::debug("適応度 = %d\n", g_maxFit);
+		Common::debug("適応度 = %f\n", g_maxFit);
 	}
 }
 
 // 遺伝子の適応度を計算（サブ）
-int CalcFitSub(int gene_no)
+float CalcFitSub(int gene_no)
 {
 	int i;
 
@@ -205,7 +242,7 @@ int CalcFitSub(int gene_no)
 	// 価値を取得
 	for(i = 1; i < GENE_LENGTH; i++) {
 		// 価値を増やす
-		value += D3DXVec3Length(&(g_value[i] - g_value[i-1]));
+		value += D3DXVec3Length(&(g_value[g_gene[gene_no][i]] - g_value[g_gene[gene_no][i-1]]));
 	}
 
 	return value;
@@ -225,9 +262,11 @@ TravelingSalesmanProblemScene* TravelingSalesmanProblemScene::init() {
 	p = (new StaticPlane)->init();
 	LPDIRECT3DVERTEXBUFFER9 vtx = p->vtx();
 	CUSTOMVERTEX* data = (CUSTOMVERTEX*)Common::getVtxDataWithLock(vtx);
-	for(int i = 0; i < 4; i++) data[i].pos *= 10;
+	for(int i = 0; i < 4; i++) data[i].pos *= 200;
 	vtx->Unlock();
 
+	int count = 0;
+	points = (new StaticPlane*[GENE_LENGTH]);
 	for each(D3DXVECTOR3 p in g_value) {
 		StaticPlane* _sp = (new StaticPlane)->init();
 		D3DXMATRIX world(_sp->world());
@@ -240,16 +279,33 @@ TravelingSalesmanProblemScene* TravelingSalesmanProblemScene::init() {
 		for(int i = 0; i < 4; i++) data[i].color = 0xff00ff00;
 		vtx->Unlock();
 
-		points.push_back(_sp);
+		points[count] = _sp;
+		count++;
 	}
 
-	camera_rot.x = camera_rot.y = (float)M_PI_2 / 2;
-	camera_len = 5;
-	a = (new Arrow)->init();
+	camera_rot.x = 0.515398f;
+	camera_rot.y = 1.7554f;
+	camera_len = 214;
 
-	D3DXVECTOR3 start(points[0]->world()._41, points[0]->world()._42, points[0]->world()._43);
-	D3DXVECTOR3 end(points[1]->world()._41, points[1]->world()._42, points[1]->world()._43);
-	a->start(start).end(end);
+	Init();
+
+	for(g_generation = 1; g_generation < GENERATON_NUM; g_generation++) {
+		CalcFit();
+		Select();
+		Cross();
+		Mute();
+	}
+
+	CalcFit();
+
+	a = (new Arrow*[GENE_LENGTH]);
+	for(int i = 0; i < GENE_LENGTH; i++) {
+		a[i] = (new Arrow)->init();
+		D3DXVECTOR3 start(points[g_maxGene[i]]->world()._41, points[g_maxGene[i]]->world()._42, points[g_maxGene[i]]->world()._43);
+		int next = (i+1)%GENE_LENGTH;
+		D3DXVECTOR3 end(points[g_maxGene[next]]->world()._41, points[g_maxGene[next]]->world()._42, points[g_maxGene[next]]->world()._43);
+		a[i]->start(start).end(end);
+	}
 
 	return this;
 }
@@ -258,16 +314,21 @@ void TravelingSalesmanProblemScene::update() {
 		camera_rot.y += InputMouse::move().x/100;
 		camera_rot.x += InputMouse::move().y/100;
 	}
-	float len = cosf(camera_rot.x);
 	camera_len -= InputMouse::wheel() / 100;
 	camera_len = (camera_len < 1) ? 1 : camera_len;
-	if(camera_rot.x > (M_PI_2-0.1f)) camera_rot.x = (float)(M_PI_2-0.1f);
-	else if(camera_rot.x < (-M_PI_2+0.1f)) camera_rot.x = (float)(-M_PI_2+0.1f);
+
+	if(camera_rot.x >= (float)(M_PI_2-0.1f))
+		camera_rot.x = (float)(M_PI_2-0.1f);
+	else if(camera_rot.x <= (float)(-M_PI_2+0.1f))
+		camera_rot.x = (float)(-M_PI_2+0.1f);
+
+	float len = cosf(camera_rot.x);
+
 	Camera::setAt(D3DXVECTOR3(0, 0, 0));
 	Camera::setEye(D3DXVECTOR3(cosf(camera_rot.y)*len, sinf(camera_rot.x), sinf(camera_rot.y)*len)*camera_len);
 
 	p->update();
-	a->update();
+	for(int i = 0; i < ITEM_NUM; i++) a[i]->update();
 
 }
 void TravelingSalesmanProblemScene::draw() {
@@ -280,14 +341,20 @@ void TravelingSalesmanProblemScene::draw() {
 	device->SetTransform(D3DTS_PROJECTION, &proj);
 
 	p->draw();
-	a->draw();
-	for each(StaticPlane* _sp in points) _sp->draw();
+	for(int i = 0; i < ITEM_NUM; i++) 
+		a[i]->draw();
+
+	for(int i = 0; i < ITEM_NUM; i++) 
+		points[i]->draw();
 
 	device->EndScene();
 }
 void TravelingSalesmanProblemScene::release() {
-	for each(StaticPlane* _sp in points) SAFE_RELEASE_DELETE(_sp);
+	for(int i = 0; i < ITEM_NUM; i++)
+		SAFE_RELEASE_DELETE(points[i]);
+	SAFE_DELETE_ARRAY(points);
 	SAFE_RELEASE_DELETE(p);
-	SAFE_RELEASE_DELETE(a);
+	for(int i = 0; i < ITEM_NUM; i++) SAFE_RELEASE_DELETE(a[i]);
+	SAFE_DELETE_ARRAY(a);
 }
 // end file

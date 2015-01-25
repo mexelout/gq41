@@ -16,9 +16,9 @@ public:
 	void release();
 private:
 	StaticPlane* p;
-	std::vector<StaticPlane*> points;
+	StaticPlane** points;
 
-	Arrow* a;
+	Arrow** a;
 
 	D3DXVECTOR2 camera_rot;
 	float camera_len;

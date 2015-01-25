@@ -39,7 +39,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(128);
+	//_CrtSetBreakAlloc(175);
 #endif
 	MSG msg; HWND hWnd;
 	WNDCLASSEX wcex ={sizeof(WNDCLASSEX), CS_HREDRAW | CS_VREDRAW, WndProc, 0, 0, hInstance, NULL, LoadCursor(NULL , IDC_ARROW),
@@ -61,7 +61,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	WindowManager::inst().setWnd(hWnd);
 	TextureManager::inst();
 
-	ShaderDevise* sd = (new ShaderDevise())->init(w, h, hWnd);
+	ShaderDevise::init(w, h, hWnd);
 
 	ShowWindow(hWnd, nCmdShow);
 	Camera::init();
@@ -116,7 +116,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	SceneManager::release();
 	TextureManager::inst().releaseAll();
 	Input::release();
-	SAFE_RELEASE_DELETE(sd);
+	ShaderDevise::release();
 
 	return 0;
 }

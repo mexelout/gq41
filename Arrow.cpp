@@ -19,7 +19,7 @@ Arrow* Arrow::init() {
 	_start = D3DXVECTOR3(0, 2,  0);
 	_end = D3DXVECTOR3( 0, -2,  0);
 
-	if(vbuf == NULL) device->CreateVertexBuffer(sizeof(CUSTOMVERTEX)*2, D3DUSAGE_WRITEONLY, D3DFVF_CUSTOMVERTEX, D3DPOOL_MANAGED, &vbuf, NULL);
+	if(vbuf == NULL) device->CreateVertexBuffer(sizeof(CUSTOMVERTEX)*4, D3DUSAGE_WRITEONLY, D3DFVF_CUSTOMVERTEX, D3DPOOL_MANAGED, &vbuf, NULL);
 	updateBuffer();
 
 	return this;
@@ -33,7 +33,7 @@ void Arrow::draw() {
 	device->SetFVF(D3DFVF_CUSTOMVERTEX);
 	device->SetRenderState(D3DRS_LIGHTING, false);
 	device->SetStreamSource(0, vbuf, 0, sizeof(CUSTOMVERTEX));
-	device->DrawPrimitive(D3DPT_LINESTRIP, 0, 1);
+	device->DrawPrimitive(D3DPT_LINELIST, 0, 2);
 	device->SetRenderState(D3DRS_LIGHTING, true);
 
 }
@@ -66,5 +66,10 @@ void Arrow::updateBuffer() {
 	CUSTOMVERTEX* data = (CUSTOMVERTEX*)Common::getVtxDataWithLock(vbuf);
 	data[0] = CUSTOMVERTEX(_start, Common::vec3zero, 0xffff0000, Common::vec2zero);
 	data[1] = CUSTOMVERTEX(_end, Common::vec3zero, 0xff0000ff, Common::vec2zero);
+	D3DXVECTOR3 dir(_end - _start);
+	D3DXVec3Normalize(&dir, &dir);
+	D3DXVECTOR3 rev_dir(dir*-1);
+	data[2] = CUSTOMVERTEX(_end + rev_dir + D3DXVECTOR3(0, 1, 0), Common::vec3zero, 0xff0000ff, Common::vec2zero);
+	data[3] = CUSTOMVERTEX(_end, Common::vec3zero, 0xff0000ff, Common::vec2zero);
 	vbuf->Unlock();
 }
